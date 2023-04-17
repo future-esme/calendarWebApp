@@ -28,6 +28,7 @@ import utm.tmps.security.SecurityUtils;
 import utm.tmps.service.dto.AdminUserDTO;
 import utm.tmps.service.dto.UserDTO;
 import utm.tmps.service.dto.UserSettingsDTO;
+import utm.tmps.web.rest.errors.NotFoundException;
 
 /**
  * Service class for managing users.
@@ -346,6 +347,19 @@ public class UserService {
     public List<String> getAuthorities() {
         return authorityRepository.findAll().stream().map(Authority::getName).collect(Collectors.toList());
     }
+
+    public User getCurrentAuthenticatedUser() {
+        var currentUser = getCurrentUser();
+        if (currentUser.isEmpty()) {
+            throw new NotFoundException("User");
+        }
+        return currentUser.get();
+    }
+    @Transactional
+    public Optional<User> getCurrentUser() {
+        return SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByLogin);
+    }
+
 
     private void clearUserCaches(User user) {
         Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE)).evict(user.getLogin());

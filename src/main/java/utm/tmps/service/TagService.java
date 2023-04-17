@@ -1,5 +1,6 @@
 package utm.tmps.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import utm.tmps.domain.Tag;
 import utm.tmps.repository.TagRepository;
+import utm.tmps.service.dto.TagCreateDTO;
 import utm.tmps.service.dto.TagDTO;
 import utm.tmps.service.mapper.TagMapper;
 
@@ -18,7 +20,7 @@ import utm.tmps.service.mapper.TagMapper;
  */
 @Service
 @Transactional
-public class TagService {
+public class TagService implements UserTagManagement {
 
     private final Logger log = LoggerFactory.getLogger(TagService.class);
 
@@ -26,9 +28,14 @@ public class TagService {
 
     private final TagMapper tagMapper;
 
-    public TagService(TagRepository tagRepository, TagMapper tagMapper) {
+    private final UserService userService;
+
+    public TagService(TagRepository tagRepository,
+                      TagMapper tagMapper,
+                      UserService userService) {
         this.tagRepository = tagRepository;
         this.tagMapper = tagMapper;
+        this.userService = userService;
     }
 
     /**
@@ -42,6 +49,31 @@ public class TagService {
         Tag tag = tagMapper.toEntity(tagDTO);
         tag = tagRepository.save(tag);
         return tagMapper.toDto(tag);
+    }
+
+    public TagDTO createTagForCurrentUser(TagCreateDTO tagDTO) {
+        log.debug("Request to save Tag : {}", tagDTO);
+        Tag tag = new Tag();
+        tag.setColor(tagDTO.getColor());
+        tag.setName(tagDTO.getName());
+        tag.setIconName(tagDTO.getIconName());
+        tag.setUserId(userService.getCurrentAuthenticatedUser());
+        tag = tagRepository.save(tag);
+        return tagMapper.toDto(tag);
+    }
+
+    /**
+     * Get all the tags.
+     *
+     * @return the list of entities.
+     */
+    @Transactional(readOnly = true)
+    public List<TagDTO> findAll() {
+        log.debug("Request to get all Tags");
+        return tagRepository.findAllByUserId(userService.getCurrentAuthenticatedUser())
+            .stream()
+            .map(tagMapper::toDto)
+            .toList();
     }
 
     /**
@@ -99,6 +131,12 @@ public class TagService {
     public Optional<TagDTO> findOne(UUID id) {
         log.debug("Request to get Tag : {}", id);
         return tagRepository.findById(id).map(tagMapper::toDto);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Tag> findTag(UUID id) {
+        log.debug("Request to get Tag : {}", id);
+        return tagRepository.findById(id);
     }
 
     /**

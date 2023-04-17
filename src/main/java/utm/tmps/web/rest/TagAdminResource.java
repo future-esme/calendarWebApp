@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -30,10 +29,10 @@ import utm.tmps.web.rest.errors.BadRequestAlertException;
  * REST controller for managing {@link utm.tmps.domain.Tag}.
  */
 @RestController
-@RequestMapping("/api")
-public class TagResource {
+@RequestMapping("/api/admin")
+public class TagAdminResource {
 
-    private final Logger log = LoggerFactory.getLogger(TagResource.class);
+    private final Logger log = LoggerFactory.getLogger(TagAdminResource.class);
 
     private static final String ENTITY_NAME = "tag";
 
@@ -44,7 +43,7 @@ public class TagResource {
 
     private final TagRepository tagRepository;
 
-    public TagResource(TagService tagService, TagRepository tagRepository) {
+    public TagAdminResource(TagService tagService, TagRepository tagRepository) {
         this.tagService = tagService;
         this.tagRepository = tagRepository;
     }

@@ -1,0 +1,117 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="userSettings && !isEdit">
+      <h2 data-cy="userSettingsDetailsHeading"><span jhiTranslate="calendarApp.userSettings.defaultSettings">defaultSettings</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="calendarApp.userSettings.weekFirstDay">Week First Day</span></dt>
+        <dd>
+          <span>{{ userSettings.weekFirstDay }}</span>
+        </dd>
+        <dt><span jhiTranslate="calendarApp.userSettings.weekNumber">Week Number</span></dt>
+        <dd>
+          <span>{{ userSettings.weekNumber }}</span>
+        </dd>
+        <dt><span jhiTranslate="calendarApp.userSettings.keepTrash">Keep Trash</span></dt>
+        <dd>
+          <span>{{ userSettings.keepTrash }}</span>
+        </dd>
+        <dt><span jhiTranslate="calendarApp.userSettings.emailLanguage">Email Language</span></dt>
+        <dd>
+          <span>{{ userSettings.emailLanguage }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" (click)="editDefaultSettings()" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+
+    <div *ngIf="isEdit">
+      <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+        <h2
+          id="jhi-user-settings-heading"
+          data-cy="UserSettingsCreateUpdateHeading"
+          jhiTranslate="calendarApp.userSettings.home.createOrEditLabel"
+        >
+          Create or edit a User Settings
+        </h2>
+
+        <div>
+          <jhi-alert-error></jhi-alert-error>
+
+          <div class="row mb-3">
+            <label class="form-label" jhiTranslate="calendarApp.userSettings.weekFirstDay">Week First Day</label>
+            <ng-select
+              [dropdownPosition]="'auto'"
+              id="field_weekFirstDay"
+              class="form-control"
+              [items]="weekFirstDay"
+              formControlName="weekFirstDay"
+              [closeOnSelect]="true"
+              [hideSelected]="true"
+              overflow:visible>
+            </ng-select>
+          </div>
+
+          <div class="row mb-3">
+            <label class="form-label" jhiTranslate="calendarApp.userSettings.weekNumber" for="field_weekNumber">Week Number</label>
+            <input
+              type="checkbox"
+              class="form-check"
+              name="weekNumber"
+              id="field_weekNumber"
+              data-cy="weekNumber"
+              formControlName="weekNumber"
+            />
+          </div>
+
+          <div class="row mb-3">
+            <label class="form-label" jhiTranslate="calendarApp.userSettings.keepTrash" for="field_keepTrash">Keep Trash</label>
+            <input type="checkbox" class="form-check" name="keepTrash" id="field_keepTrash" data-cy="keepTrash" formControlName="keepTrash" />
+          </div>
+
+          <div class="row mb-3">
+            <label class="form-label" jhiTranslate="calendarApp.userSettings.emailLanguage">Email Language</label>
+            <ng-select
+              [dropdownPosition]="'auto'"
+              id="field_emailLanguage"
+              class="form-control"
+              [items]="languages"
+              formControlName="emailLanguage"
+              [closeOnSelect]="true"
+              [hideSelected]="true"
+              overflow:visible>
+            </ng-select>
+          </div>
+        </div>
+
+        <div>
+          <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+            <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+          </button>
+
+          <button
+            type="submit"
+            id="save-entity"
+            data-cy="entityCreateSaveButton"
+            [disabled]="editForm.invalid"
+            class="btn btn-primary"
+          >
+            <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

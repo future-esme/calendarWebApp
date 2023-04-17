@@ -14,7 +14,7 @@ export type EntityArrayResponseType = HttpResponse<ITag[]>;
 
 @Injectable({ providedIn: 'root' })
 export class TagService {
-  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/tags');
+  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/admin/tags');
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 

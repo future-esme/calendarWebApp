@@ -71,6 +71,12 @@ export class UserSettingsComponent implements OnInit {
     this.handleNavigation(page, this.predicate, this.ascending);
   }
 
+  getDefault() {
+    this.router.navigate(['./default'], {
+      relativeTo: this.activatedRoute
+    });
+  }
+
   protected loadFromBackendWithRouteInformations(): Observable<EntityArrayResponseType> {
     return combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data]).pipe(
       tap(([params, data]) => this.fillComponentAttributeFromRoute(params, data)),

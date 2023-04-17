@@ -7,6 +7,7 @@ import { UserSettingsDetailComponent } from '../detail/user-settings-detail.comp
 import { UserSettingsUpdateComponent } from '../update/user-settings-update.component';
 import { UserSettingsRoutingResolveService } from './user-settings-routing-resolve.service';
 import { ASC } from 'app/config/navigation.constants';
+import {UserSettingsDefaultDetailComponent} from "../default-detail/user-settings-default-detail.component";
 
 const userSettingsRoute: Routes = [
   {
@@ -31,6 +32,11 @@ const userSettingsRoute: Routes = [
     resolve: {
       userSettings: UserSettingsRoutingResolveService,
     },
+    canActivate: [UserRouteAccessService],
+  },
+  {
+    path: 'default',
+    component: UserSettingsDefaultDetailComponent,
     canActivate: [UserRouteAccessService],
   },
   {

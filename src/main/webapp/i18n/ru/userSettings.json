@@ -22,7 +22,8 @@
       "weekNumber": "Week Number",
       "keepTrash": "Keep Trash",
       "emailLanguage": "Email Language",
-      "userId": "User Id"
+      "userId": "User Id",
+      "defaultSettings": "Default settings"
     }
   }
 }

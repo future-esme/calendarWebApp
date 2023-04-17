@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
-import { IUserSettings, NewUserSettings } from '../user-settings.model';
+import {IUserSettings, NewUserSettings, UserSettings} from '../user-settings.model';
 
 export type PartialUpdateUserSettings = Partial<IUserSettings> & Pick<IUserSettings, 'id'>;
 
@@ -15,6 +15,7 @@ export type EntityArrayResponseType = HttpResponse<IUserSettings[]>;
 @Injectable({ providedIn: 'root' })
 export class UserSettingsService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/user-settings');
+  protected resourceAdminUrl = this.applicationConfigService.getEndpointFor('api/admin/users-settings');
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
@@ -36,6 +37,14 @@ export class UserSettingsService {
 
   find(id: string): Observable<EntityResponseType> {
     return this.http.get<IUserSettings>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+  }
+
+  findDefault(): Observable<EntityResponseType> {
+    return this.http.get<IUserSettings>(this.resourceAdminUrl, { observe: 'response' });
+  }
+
+  updateDefault(userSettings: UserSettings): Observable<HttpResponse<{}>> {
+    return this.http.post<{}>(this.resourceAdminUrl, userSettings, { observe: 'response' });
   }
 
   query(req?: any): Observable<EntityArrayResponseType> {

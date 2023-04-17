@@ -5,9 +5,15 @@ import { UserSettingsDetailComponent } from './detail/user-settings-detail.compo
 import { UserSettingsUpdateComponent } from './update/user-settings-update.component';
 import { UserSettingsDeleteDialogComponent } from './delete/user-settings-delete-dialog.component';
 import { UserSettingsRoutingModule } from './route/user-settings-routing.module';
+import {UserSettingsDefaultDetailComponent} from "./default-detail/user-settings-default-detail.component";
 
 @NgModule({
   imports: [SharedModule, UserSettingsRoutingModule],
-  declarations: [UserSettingsComponent, UserSettingsDetailComponent, UserSettingsUpdateComponent, UserSettingsDeleteDialogComponent],
+  declarations: [
+    UserSettingsComponent,
+    UserSettingsDetailComponent,
+    UserSettingsUpdateComponent,
+    UserSettingsDeleteDialogComponent,
+    UserSettingsDefaultDetailComponent],
 })
 export class UserSettingsModule {}

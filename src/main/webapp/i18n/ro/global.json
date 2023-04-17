@@ -114,7 +114,8 @@
       "open": "Deschidere",
       "save": "Salvare",
       "view": "Vizualizare",
-      "show": "Show {{otherEntity}}"
+      "show": "Show {{otherEntity}}",
+      "select": "Select"
     },
     "detail": {
       "field": "Câmp",
