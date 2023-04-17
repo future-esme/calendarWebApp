@@ -7,6 +7,9 @@
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
         "main": "Сущности",
+        "tag": "Tag",
+        "userSettings": "User Settings",
+        "event": "Event",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {
@@ -35,6 +38,10 @@
     "form": {
       "username.label": "Логин",
       "username.placeholder": "Ваш логин",
+      "firstName.label": "First name",
+      "firstName.placeholder": "Ion",
+      "lastName.label": "Last name",
+      "lastName.placeholder": "Creanga",
       "currentpassword.label": "Текущий пароль",
       "currentpassword.placeholder": "Текущий пароль",
       "newpassword.label": "Новый пароль",

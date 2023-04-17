@@ -3,6 +3,7 @@ package utm.tmps.service.dto;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.validation.constraints.*;
 import utm.tmps.config.Constants;
@@ -16,25 +17,22 @@ public class AdminUserDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private UUID id;
 
     @NotBlank
     @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
     private String login;
 
-    @Size(max = 50)
+    @Size(max = 100)
     private String firstName;
 
-    @Size(max = 50)
+    @Size(max = 100)
     private String lastName;
 
     @Email
     @Size(min = 5, max = 254)
     private String email;
-
-    @Size(max = 256)
-    private String imageUrl;
 
     private boolean activated = false;
 
@@ -62,7 +60,6 @@ public class AdminUserDTO implements Serializable {
         this.lastName = user.getLastName();
         this.email = user.getEmail();
         this.activated = user.isActivated();
-        this.imageUrl = user.getImageUrl();
         this.langKey = user.getLangKey();
         this.createdBy = user.getCreatedBy();
         this.createdDate = user.getCreatedDate();
@@ -71,11 +68,11 @@ public class AdminUserDTO implements Serializable {
         this.authorities = user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toSet());
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -110,15 +107,6 @@ public class AdminUserDTO implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
     public boolean isActivated() {
         return activated;
     }
@@ -183,7 +171,6 @@ public class AdminUserDTO implements Serializable {
             ", firstName='" + firstName + '\'' +
             ", lastName='" + lastName + '\'' +
             ", email='" + email + '\'' +
-            ", imageUrl='" + imageUrl + '\'' +
             ", activated=" + activated +
             ", langKey='" + langKey + '\'' +
             ", createdBy=" + createdBy +

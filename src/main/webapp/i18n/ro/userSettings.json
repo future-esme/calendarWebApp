@@ -1,0 +1,28 @@
+{
+  "calendarApp": {
+    "userSettings": {
+      "home": {
+        "title": "User Settings",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Creeare o nouă entitate User Settings",
+        "createOrEditLabel": "Creeare sau editare User Settings",
+        "notFound": "No User Settings found"
+      },
+      "created": "A fost creată o nouă entitate User Settings cu identificatorul {{ param }}",
+      "updated": "User Settings cu identificatorul {{ param }} a fost actualizată",
+      "deleted": "User Settings cu identificatorul {{ param }} a fost ștearsă",
+      "delete": {
+        "question": "Sunteți sigur că doriți să ștergeți User Settings {{ id }}?"
+      },
+      "detail": {
+        "title": "User Settings"
+      },
+      "id": "Id",
+      "weekFirstDay": "Week First Day",
+      "weekNumber": "Week Number",
+      "keepTrash": "Keep Trash",
+      "emailLanguage": "Email Language",
+      "userId": "User Id"
+    }
+  }
+}

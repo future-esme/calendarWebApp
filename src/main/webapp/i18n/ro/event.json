@@ -1,0 +1,34 @@
+{
+  "calendarApp": {
+    "event": {
+      "home": {
+        "title": "Events",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Creeare o nouă entitate Event",
+        "createOrEditLabel": "Creeare sau editare Event",
+        "notFound": "No Events found"
+      },
+      "created": "A fost creată o nouă entitate Event cu identificatorul {{ param }}",
+      "updated": "Event cu identificatorul {{ param }} a fost actualizată",
+      "deleted": "Event cu identificatorul {{ param }} a fost ștearsă",
+      "delete": {
+        "question": "Sunteți sigur că doriți să ștergeți Event {{ id }}?"
+      },
+      "detail": {
+        "title": "Event"
+      },
+      "id": "Id",
+      "title": "Title",
+      "location": "Location",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "notes": "Notes",
+      "sendPushNotification": "Send Push Notification",
+      "sendEmailNotification": "Send Email Notification",
+      "notificationTime": "Notification Time",
+      "status": "Status",
+      "userId": "User Id",
+      "tagId": "Tag Id"
+    }
+  }
+}
