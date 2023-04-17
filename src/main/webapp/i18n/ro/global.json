@@ -10,9 +10,6 @@
         "bankAccount": "ContBancar",
         "label": "Etichetă",
         "operation": "Operație",
-        "tag": "Tag",
-        "userSettings": "User Settings",
-        "event": "Event",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {
@@ -47,10 +44,6 @@
     "form": {
       "username.label": "Utilizator",
       "username.placeholder": "Numele de utilizator",
-      "firstName.label": "First name",
-      "firstName.placeholder": "Ion",
-      "lastName.label": "Last name",
-      "lastName.placeholder": "Creanga",
       "currentpassword.label": "Current password",
       "currentpassword.placeholder": "Current password",
       "newpassword.label": "Parolă nouă",

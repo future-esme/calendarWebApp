@@ -1,8 +1,6 @@
 package utm.tmps.service.dto;
 
 import java.io.Serializable;
-import java.util.UUID;
-
 import utm.tmps.domain.User;
 
 /**
@@ -12,7 +10,7 @@ public class UserDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private UUID id;
+    private Long id;
 
     private String login;
 
@@ -26,11 +24,11 @@ public class UserDTO implements Serializable {
         this.login = user.getLogin();
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

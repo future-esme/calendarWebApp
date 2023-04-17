@@ -23,13 +23,11 @@ import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 import utm.tmps.config.Constants;
 import utm.tmps.domain.User;
-import utm.tmps.domain.UserSettings;
 import utm.tmps.repository.UserRepository;
 import utm.tmps.security.AuthoritiesConstants;
 import utm.tmps.service.MailService;
 import utm.tmps.service.UserService;
 import utm.tmps.service.dto.AdminUserDTO;
-import utm.tmps.service.dto.UserSettingsDTO;
 import utm.tmps.web.rest.errors.BadRequestAlertException;
 import utm.tmps.web.rest.errors.EmailAlreadyUsedException;
 import utm.tmps.web.rest.errors.LoginAlreadyUsedException;
@@ -206,19 +204,4 @@ public class UserResource {
         userService.deleteUser(login);
         return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName, "userManagement.deleted", login)).build();
     }
-
-    @PostMapping("/users-settings")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity<Void> updateDefaultSettings(@Valid @RequestBody UserSettingsDTO userSettingsDTO) {
-        log.debug("REST request to update User settings : {}", userSettingsDTO);
-        userService.changeDefaultSettings(userSettingsDTO);
-        return ResponseEntity.status(201).build();
-    }
-    @GetMapping("/users-settings")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity<UserSettings> getDefaultSettings() {
-        log.debug("REST request to get default User settings");
-        return ResponseEntity.ok(userService.getDefaultSettings());
-    }
-
 }

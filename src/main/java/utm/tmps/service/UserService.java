@@ -16,18 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 import tech.jhipster.security.RandomUtil;
 import utm.tmps.config.Constants;
 import utm.tmps.domain.Authority;
-import utm.tmps.domain.enumeration.Languages;
-import utm.tmps.domain.enumeration.StartWeekDay;
 import utm.tmps.domain.User;
-import utm.tmps.domain.UserSettings;
 import utm.tmps.repository.AuthorityRepository;
 import utm.tmps.repository.UserRepository;
-import utm.tmps.repository.UserSettingsRepository;
 import utm.tmps.security.AuthoritiesConstants;
 import utm.tmps.security.SecurityUtils;
 import utm.tmps.service.dto.AdminUserDTO;
 import utm.tmps.service.dto.UserDTO;
-import utm.tmps.service.dto.UserSettingsDTO;
 
 /**
  * Service class for managing users.
@@ -46,41 +41,18 @@ public class UserService {
 
     private final CacheManager cacheManager;
 
-    private UserSettings defaultUserSettings;
-
-    private final UserSettingsRepository userSettingsRepository;
-
     public UserService(
         UserRepository userRepository,
         PasswordEncoder passwordEncoder,
         AuthorityRepository authorityRepository,
-        CacheManager cacheManager,
-        UserSettingsRepository userSettingsRepository) {
+        CacheManager cacheManager
+    ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;
-        this.userSettingsRepository = userSettingsRepository;
-        this.defaultUserSettings = new UserSettings(
-            StartWeekDay.MONDAY,
-            false,
-            false,
-            Languages.EN
-        );
     }
 
-    public void changeDefaultSettings(UserSettingsDTO dto) {
-        this.defaultUserSettings = new UserSettings(
-            dto.getWeekFirstDay(),
-            dto.getWeekNumber(),
-            dto.getKeepTrash(),
-            dto.getEmailLanguage()
-        );
-    }
-
-    public UserSettings getDefaultSettings() {
-        return this.defaultUserSettings;
-    }
     public Optional<User> activateRegistration(String key) {
         log.debug("Activating user for activation key {}", key);
         return userRepository
@@ -148,6 +120,7 @@ public class UserService {
         if (userDTO.getEmail() != null) {
             newUser.setEmail(userDTO.getEmail().toLowerCase());
         }
+        newUser.setImageUrl(userDTO.getImageUrl());
         newUser.setLangKey(userDTO.getLangKey());
         // new user is not active
         newUser.setActivated(false);
@@ -156,17 +129,10 @@ public class UserService {
         Set<Authority> authorities = new HashSet<>();
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newUser.setAuthorities(authorities);
-        var userSaved = userRepository.save(newUser);
-        saveUserDefaultSettings(userSaved);
+        userRepository.save(newUser);
         this.clearUserCaches(newUser);
         log.debug("Created Information for User: {}", newUser);
         return newUser;
-    }
-
-    private void saveUserDefaultSettings(User user) {
-        var defaultSettings = this.defaultUserSettings.clone();
-        defaultSettings.setUserId(user);
-        userSettingsRepository.save(defaultSettings);
     }
 
     private boolean removeNonActivatedUser(User existingUser) {
@@ -187,6 +153,7 @@ public class UserService {
         if (userDTO.getEmail() != null) {
             user.setEmail(userDTO.getEmail().toLowerCase());
         }
+        user.setImageUrl(userDTO.getImageUrl());
         if (userDTO.getLangKey() == null) {
             user.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
         } else {
@@ -207,8 +174,7 @@ public class UserService {
                 .collect(Collectors.toSet());
             user.setAuthorities(authorities);
         }
-        var userSaved = userRepository.save(user);
-        saveUserDefaultSettings(userSaved);
+        userRepository.save(user);
         this.clearUserCaches(user);
         log.debug("Created Information for User: {}", user);
         return user;
@@ -233,6 +199,7 @@ public class UserService {
                 if (userDTO.getEmail() != null) {
                     user.setEmail(userDTO.getEmail().toLowerCase());
                 }
+                user.setImageUrl(userDTO.getImageUrl());
                 user.setActivated(userDTO.isActivated());
                 user.setLangKey(userDTO.getLangKey());
                 Set<Authority> managedAuthorities = user.getAuthorities();
@@ -268,8 +235,9 @@ public class UserService {
      * @param lastName  last name of user.
      * @param email     email id of user.
      * @param langKey   language key.
+     * @param imageUrl  image URL of user.
      */
-    public void updateUser(String firstName, String lastName, String email, String langKey) {
+    public void updateUser(String firstName, String lastName, String email, String langKey, String imageUrl) {
         SecurityUtils
             .getCurrentUserLogin()
             .flatMap(userRepository::findOneByLogin)
@@ -280,6 +248,7 @@ public class UserService {
                     user.setEmail(email.toLowerCase());
                 }
                 user.setLangKey(langKey);
+                user.setImageUrl(imageUrl);
                 this.clearUserCaches(user);
                 log.debug("Changed Information for User: {}", user);
             });
