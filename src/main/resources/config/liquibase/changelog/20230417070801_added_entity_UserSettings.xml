@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!--
+        Added the entity UserSettings.
+    -->
+    <changeSet id="20230417070801-1" author="gabriela">
+        <createTable tableName="user_settings">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="week_first_day" type="varchar(20)">
+                <constraints nullable="false" />
+            </column>
+            <column name="week_number" type="boolean">
+                <constraints nullable="true" />
+            </column>
+            <column name="keep_trash" type="boolean">
+                <constraints nullable="true" />
+            </column>
+            <column name="email_language" type="varchar(10)">
+                <constraints nullable="true" />
+            </column>
+            <column name="user_id" type="uuid">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20230417070801-2" author="gabriela">
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="user_settings"
+                                 constraintName="fk_user_settings__user_id_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"/>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,47 @@
+entity Tag {
+    id UUID,
+    name String maxlength(50) minlength(3) required,
+    iconName String maxlength(50),
+    color String maxlength(50) required
+}
+
+relationship OneToOne {
+    Tag{userId} to User
+}
+
+entity UserSettings {
+    id UUID,
+    weekFirstDay String maxlength(20) required,
+    weekNumber Boolean,
+    keepTrash Boolean,
+    emailLanguage String maxlength(10)
+}
+
+relationship OneToOne {
+    UserSettings{userId} to User
+}
+
+entity Event {
+    id UUID,
+    title String maxlength(255) required,
+    location String maxlength(255),
+    startTime Instant required,
+    endTime Instant required,
+    notes String maxlength(1024),
+    sendPushNotification Boolean,
+    sendEmailNotification Boolean,
+    notificationTime Instant,
+    status String maxlength(50)
+}
+
+relationship OneToOne {
+    Event{userId} to User
+}
+
+relationship OneToOne {
+    Event{tagId} to Tag
+}
+
+dto * with mapstruct
+service * with serviceClass
+paginate * with pagination

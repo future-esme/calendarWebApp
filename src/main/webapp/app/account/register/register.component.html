@@ -29,6 +29,28 @@
     <div class="col-md-8">
       <form name="form" role="form" (ngSubmit)="register()" [formGroup]="registerForm" *ngIf="!success">
         <div class="mb-3">
+          <label class="form-label" for="login" jhiTranslate="global.form.firstName.label">firstName</label>
+          <input
+            type="text"
+            class="form-control"
+            id="firstName"
+            name="firstName"
+            placeholder="{{ 'global.form.firstName.placeholder' | translate }}"
+            formControlName="firstName"
+          />
+        </div>
+          <div class="mb-3">
+            <label class="form-label" for="login" jhiTranslate="global.form.lastName.label">lastName</label>
+            <input
+              type="text"
+              class="form-control"
+              id="lastName"
+              name="lastName"
+              placeholder="{{ 'global.form.lastName.placeholder' | translate }}"
+              formControlName="lastName"
+            />
+        </div>
+        <div class="mb-3">
           <label class="form-label" for="login" jhiTranslate="global.form.username.label">Username</label>
           <input
             type="text"

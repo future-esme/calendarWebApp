@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!--
+        Added the entity Event.
+    -->
+    <changeSet id="20230417070802-1" author="gabriela">
+        <createTable tableName="event">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="title" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="location" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="start_time" type="timestamp">
+                <constraints nullable="false" />
+            </column>
+            <column name="end_time" type="timestamp">
+                <constraints nullable="false" />
+            </column>
+            <column name="notes" type="varchar(1024)">
+                <constraints nullable="true" />
+            </column>
+            <column name="send_push_notification" type="boolean">
+                <constraints nullable="true" />
+            </column>
+            <column name="send_email_notification" type="boolean">
+                <constraints nullable="true" />
+            </column>
+            <column name="notification_time" type="timestamp">
+                <constraints nullable="true" />
+            </column>
+            <column name="status" type="varchar(50)">
+                <constraints nullable="true" />
+            </column>
+            <column name="user_id" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="tag_id" type="uuid">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="20230417070802-2" author="gabriela">
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="event"
+                                 constraintName="fk_event__user_id_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"/>
+
+        <addForeignKeyConstraint baseColumnNames="tag_id"
+                                 baseTableName="event"
+                                 constraintName="fk_event__tag_id_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tag"/>
+    </changeSet>
+</databaseChangeLog>
