@@ -13,6 +13,8 @@ import { SortByDirective } from './sort/sort-by.directive';
 import { SortDirective } from './sort/sort.directive';
 import { ItemCountComponent } from './pagination/item-count.component';
 import { FilterComponent } from './filter/filter.component';
+import {FormatStandartDateTimePipe} from "./date/format-standart-datetime.pipe";
+import {FormatStandartDatePipe} from "./date/format-standart-date.pipe";
 
 @NgModule({
   imports: [SharedLibsModule],
@@ -29,6 +31,8 @@ import { FilterComponent } from './filter/filter.component';
     SortDirective,
     ItemCountComponent,
     FilterComponent,
+    FormatStandartDatePipe,
+    FormatStandartDateTimePipe,
   ],
   exports: [
     SharedLibsModule,
@@ -44,6 +48,8 @@ import { FilterComponent } from './filter/filter.component';
     SortDirective,
     ItemCountComponent,
     FilterComponent,
+    FormatStandartDatePipe,
+    FormatStandartDateTimePipe,
   ],
 })
 export class SharedModule {}

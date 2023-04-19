@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import utm.tmps.domain.UserSettings;
 import utm.tmps.repository.UserSettingsRepository;
+import utm.tmps.service.dto.UserInfoAndSettingsDTO;
 import utm.tmps.service.dto.UserSettingsDTO;
 import utm.tmps.service.mapper.UserSettingsMapper;
 
@@ -26,9 +27,12 @@ public class UserSettingsService {
 
     private final UserSettingsMapper userSettingsMapper;
 
-    public UserSettingsService(UserSettingsRepository userSettingsRepository, UserSettingsMapper userSettingsMapper) {
+    private final UserService userService;
+
+    public UserSettingsService(UserSettingsRepository userSettingsRepository, UserSettingsMapper userSettingsMapper, UserService userService) {
         this.userSettingsRepository = userSettingsRepository;
         this.userSettingsMapper = userSettingsMapper;
+        this.userService = userService;
     }
 
     /**
@@ -50,11 +54,16 @@ public class UserSettingsService {
      * @param userSettingsDTO the entity to save.
      * @return the persisted entity.
      */
-    public UserSettingsDTO update(UserSettingsDTO userSettingsDTO) {
+    public UserInfoAndSettingsDTO update(UserSettingsDTO userSettingsDTO) {
         log.debug("Request to update UserSettings : {}", userSettingsDTO);
-        UserSettings userSettings = userSettingsMapper.toEntity(userSettingsDTO);
-        userSettings = userSettingsRepository.save(userSettings);
-        return userSettingsMapper.toDto(userSettings);
+        var currentUser = userService.getCurrentAuthenticatedUser();
+        UserSettings userSettings = userSettingsRepository.findUserSettingsByUserId(currentUser).get();
+        userSettings.setWeekNumber(userSettingsDTO.getWeekNumber());
+        userSettings.setKeepTrash(userSettingsDTO.getKeepTrash());
+        userSettings.setWeekFirstDay(userSettingsDTO.getWeekFirstDay());
+        userSettings.setEmailLanguage(userSettingsDTO.getEmailLanguage());
+        userSettingsRepository.save(userSettings);
+        return new UserInfoAndSettingsDTO(currentUser);
     }
 
     /**
@@ -99,6 +108,11 @@ public class UserSettingsService {
     public Optional<UserSettingsDTO> findOne(UUID id) {
         log.debug("Request to get UserSettings : {}", id);
         return userSettingsRepository.findById(id).map(userSettingsMapper::toDto);
+    }
+
+    public UserInfoAndSettingsDTO findMySettings() {
+        var currentUser = userService.getCurrentAuthenticatedUser();
+        return new UserInfoAndSettingsDTO(currentUser);
     }
 
     /**

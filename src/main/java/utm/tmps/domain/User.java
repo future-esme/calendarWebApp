@@ -88,7 +88,8 @@ public class User extends AbstractAuditingEntity<UUID> implements Serializable {
     @BatchSize(size = 20)
     private Set<Authority> authorities = new HashSet<>();
 
-    @OneToOne(mappedBy = "userId")
+    @JsonIgnore
+    @OneToOne(mappedBy = "userId", cascade = CascadeType.ALL)
     private UserSettings userSettings;
 
     public UUID getId() {

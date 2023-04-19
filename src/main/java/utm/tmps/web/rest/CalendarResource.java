@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import utm.tmps.domain.enumeration.MONTH;
+import utm.tmps.domain.enumeration.Month;
 import utm.tmps.service.CalendarService;
 import utm.tmps.service.dto.CalendarDTO;
 
@@ -24,8 +24,8 @@ public class CalendarResource {
 
     @GetMapping
     public ResponseEntity<CalendarDTO> getCalendarForCurrentUser(
-        @RequestParam("month") MONTH month,
+        @RequestParam("month") Month month,
         @RequestParam("year") Integer year) {
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(calendarService.getCalendarForCurrentUser(month, year));
     }
 }

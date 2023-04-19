@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -22,7 +21,9 @@ import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 import utm.tmps.repository.UserSettingsRepository;
+import utm.tmps.service.UserService;
 import utm.tmps.service.UserSettingsService;
+import utm.tmps.service.dto.UserInfoAndSettingsDTO;
 import utm.tmps.service.dto.UserSettingsDTO;
 import utm.tmps.web.rest.errors.BadRequestAlertException;
 
@@ -44,9 +45,12 @@ public class UserSettingsResource {
 
     private final UserSettingsRepository userSettingsRepository;
 
-    public UserSettingsResource(UserSettingsService userSettingsService, UserSettingsRepository userSettingsRepository) {
+    private final UserService userService;
+
+    public UserSettingsResource(UserSettingsService userSettingsService, UserSettingsRepository userSettingsRepository, UserService userService) {
         this.userSettingsService = userSettingsService;
         this.userSettingsRepository = userSettingsRepository;
+        this.userService = userService;
     }
 
     /**
@@ -81,10 +85,10 @@ public class UserSettingsResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/user-settings/{id}")
-    public ResponseEntity<UserSettingsDTO> updateUserSettings(
+    public ResponseEntity<UserInfoAndSettingsDTO> updateUserSettings(
         @PathVariable(value = "id", required = false) final UUID id,
         @Valid @RequestBody UserSettingsDTO userSettingsDTO
-    ) throws URISyntaxException {
+    ) {
         log.debug("REST request to update UserSettings : {}, {}", id, userSettingsDTO);
         if (userSettingsDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -97,7 +101,7 @@ public class UserSettingsResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        UserSettingsDTO result = userSettingsService.update(userSettingsDTO);
+        UserInfoAndSettingsDTO result = userSettingsService.update(userSettingsDTO);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, userSettingsDTO.getId().toString()))
@@ -154,6 +158,35 @@ public class UserSettingsResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
+    @GetMapping("/user-settings/my")
+    public ResponseEntity<UserInfoAndSettingsDTO> getMySettings() {
+        log.debug("REST request to get a page of UserSettings");
+        return ResponseEntity.ok().body(userSettingsService.findMySettings());
+    }
+
+
+    @PutMapping("/user-settings/my")
+    public ResponseEntity<UserInfoAndSettingsDTO> updateMySettings(
+        @RequestBody UserInfoAndSettingsDTO userSettingsDTO
+    ) {
+        log.debug("REST request to update UserSettings : {}", userSettingsDTO);
+        var userSettings = new UserSettingsDTO();
+        userSettings.setWeekFirstDay(userSettingsDTO.getWeekFirstDay());
+        userSettings.setEmailLanguage(userSettingsDTO.getEmailLanguage());
+        userSettings.setKeepTrash(userSettingsDTO.getKeepTrash());
+        userSettings.setWeekNumber(userSettingsDTO.getWeekNumber());
+        userService.updateUser(
+            userSettingsDTO.getFirstName(),
+            userSettingsDTO.getLastName(),
+            userSettingsDTO.getEmail(),
+            userSettingsDTO.getLangKey()
+        );
+        var result = userSettingsService.update(userSettings);
+        return ResponseEntity
+            .ok()
+            .body(result);
+    }
+
     /**
      * {@code GET  /user-settings/:id} : get the "id" userSettings.
      *
@@ -165,21 +198,5 @@ public class UserSettingsResource {
         log.debug("REST request to get UserSettings : {}", id);
         Optional<UserSettingsDTO> userSettingsDTO = userSettingsService.findOne(id);
         return ResponseUtil.wrapOrNotFound(userSettingsDTO);
-    }
-
-    /**
-     * {@code DELETE  /user-settings/:id} : delete the "id" userSettings.
-     *
-     * @param id the id of the userSettingsDTO to delete.
-     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
-     */
-    @DeleteMapping("/user-settings/{id}")
-    public ResponseEntity<Void> deleteUserSettings(@PathVariable UUID id) {
-        log.debug("REST request to delete UserSettings : {}", id);
-        userSettingsService.delete(id);
-        return ResponseEntity
-            .noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
-            .build();
     }
 }

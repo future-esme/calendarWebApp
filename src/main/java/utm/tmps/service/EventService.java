@@ -1,5 +1,9 @@
 package utm.tmps.service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -9,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import utm.tmps.domain.Event;
+import utm.tmps.domain.enumeration.Month;
 import utm.tmps.repository.EventRepository;
 import utm.tmps.service.dto.EventDTO;
 import utm.tmps.service.mapper.EventMapper;
@@ -17,7 +22,6 @@ import utm.tmps.service.mapper.EventMapper;
  * Service Implementation for managing {@link Event}.
  */
 @Service
-@Transactional
 public class EventService {
 
     private final Logger log = LoggerFactory.getLogger(EventService.class);
@@ -26,9 +30,12 @@ public class EventService {
 
     private final EventMapper eventMapper;
 
-    public EventService(EventRepository eventRepository, EventMapper eventMapper) {
+    private final UserService userService;
+
+    public EventService(EventRepository eventRepository, EventMapper eventMapper, UserService userService) {
         this.eventRepository = eventRepository;
         this.eventMapper = eventMapper;
+        this.userService = userService;
     }
 
     /**
@@ -99,6 +106,14 @@ public class EventService {
     public Optional<EventDTO> findOne(UUID id) {
         log.debug("Request to get Event : {}", id);
         return eventRepository.findById(id).map(eventMapper::toDto);
+    }
+
+
+    public List<Event> findEventsByDay(Integer day, Month month, Integer year) {
+        var currentUser = userService.getCurrentAuthenticatedUser();
+        var targetDayStart = LocalDateTime.of(year, month.ordinal() + 1, day, 0, 0).toInstant(ZoneOffset.UTC);
+        var targetDayEnd = LocalDateTime.of(year, month.ordinal() + 1, day, 23, 0).toInstant(ZoneOffset.UTC);
+        return eventRepository.findUserEventByDay(currentUser.getId(), targetDayStart, targetDayEnd);
     }
 
     /**

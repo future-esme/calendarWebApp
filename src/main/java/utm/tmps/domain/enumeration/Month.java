@@ -1,6 +1,6 @@
 package utm.tmps.domain.enumeration;
 
-public enum MONTH {
+public enum Month {
     JANUARY,
     FEBRUARY,
     MARCH,

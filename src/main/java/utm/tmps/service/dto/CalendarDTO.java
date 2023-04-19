@@ -1,6 +1,6 @@
 package utm.tmps.service.dto;
 
-import utm.tmps.domain.enumeration.MONTH;
+import utm.tmps.domain.enumeration.Month;
 import utm.tmps.domain.enumeration.StartWeekDay;
 import utm.tmps.domain.enumeration.WeekDays;
 
@@ -10,7 +10,7 @@ import java.util.List;
 public class CalendarDTO {
     private List<WeekDays> weekDays;
 
-    private MONTH month;
+    private Month month;
 
     private Integer year;
 
@@ -29,6 +29,7 @@ public class CalendarDTO {
     }
 
     public void setWeekDays(StartWeekDay startWeekDay) {
+        this.weekDays = new ArrayList<>();
         switch (startWeekDay) {
             case MONDAY -> {
                 this.weekDays.add(WeekDays.MONDAY);
@@ -60,11 +61,11 @@ public class CalendarDTO {
         }
     }
 
-    public MONTH getMonth() {
+    public Month getMonth() {
         return month;
     }
 
-    public void setMonth(MONTH month) {
+    public void setMonth(Month month) {
         this.month = month;
     }
 

@@ -40,7 +40,7 @@ public class UserSettings implements Serializable, Cloneable {
     @Enumerated(EnumType.STRING)
     private Languages emailLanguage;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User userId;
 

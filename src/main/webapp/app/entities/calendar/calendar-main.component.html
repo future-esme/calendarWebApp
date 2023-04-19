@@ -1,10 +1,130 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
-<body>
+<div>
+ <div class="col-md-8">
+   <h2 data-cy="tagDetailsHeading">
+    <span>
+    {{ selectedDay }}
+      {{ selectedMonth }},
+      {{ year }}
+    </span>
 
-</body>
-</html>
+     <div class="d-flex btn-group float-end">
+       <button
+         class="btn btn-outline-info btn-sm btn-title-rounded"
+         (click)="prevMonth()"
+         placement="top"
+         container="body">
+         <fa-icon icon="arrow-left" class="fa-2x"></fa-icon>
+       </button>
+       <button
+         class="btn btn-outline-info btn-sm btn-title-rounded"
+         (click)="nextMonth()"
+         placement="top"
+         container="body">
+         <fa-icon icon="arrow-right" class="fa-2x"></fa-icon>
+       </button>
+     </div>
+   </h2>
+ </div>
+  <div class="row">
+    <div class="jh-card card col-md-8">
+      <div class="table-responsive table-entities" id="entities" *ngIf="calendar">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th *ngIf="calendar.weeks && calendar.weeks[0].weekNumber != null" class="col-half-one">
+              <div class="d-flex float-end">
+                <span></span>
+              </div>
+            </th>
+            <th *ngFor="let weekDay of calendar.weekDays" class="col-1">
+              <div class="d-flex float-end">
+                <span jhiTranslate="calendar.weekDays.{{weekDay}}"></span>
+              </div>
+            </th>
+          </tr>
+          </thead>
+        </table>
+        <table class="table table-striped" aria-describedby="page-heading" *ngFor="let week of calendar.weeks">
+          <thead>
+          <tr>
+            <th *ngIf="calendar.weeks && calendar.weeks[0].weekNumber != null" class="col-half-one week-number">
+              <span></span>
+            </th>
+            <th scope="col" *ngFor="let day of week.days" class="col-1">
+              <div class="d-flex float-end" (click)="showEventsDay(day.day)" style=" cursor: pointer">
+                <span class="text-muted" *ngIf="!day.targetMonth">{{ day.day }}</span>
+                <span *ngIf="day.targetMonth">{{ day.day }}</span>
+              </div>
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr data-cy="entityTable">
+            <td *ngIf="calendar.weeks && calendar.weeks[0].weekNumber != null" class="week-number">
+              <span>{{week.weekNumber}}</span>
+            </td>
+            <td *ngFor="let day of week.days">
+              <div (click)="showEventsDay(day.day)" style=" cursor: pointer">
+              <span *ngIf="day.hasEvents"
+                    style="background-color: blueviolet" class="calendar-day"></span>
+                <span *ngIf="!day.hasEvents" class="calendar-day"></span>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="jh-card card col-md-4"></div>
+    <div class="jh-card card col-md-8">
+      <div class="table-responsive table-entities" id="events" *ngIf="events && events.length > 0">
+        <table class="table table-hover" aria-describedby="page-heading">
+          <thead>
+          <tr>
+            <th scope="col">
+              <div class="d-flex">
+                <span jhiTranslate="calendarApp.event.title">Title</span>
+              </div>
+            </th>
+            <th scope="col">
+              <div class="d-flex">
+                <span jhiTranslate="calendarApp.event.location">Location</span>
+              </div>
+            </th>
+            <th scope="col">
+              <div class="d-flex">
+                <span jhiTranslate="calendarApp.event.startTime">Start Time</span>
+              </div>
+            </th>
+            <th scope="col">
+              <div class="d-flex">
+                <span jhiTranslate="calendarApp.event.endTime">End Time</span>
+              </div>
+            </th>
+            <th scope="col">
+              <div class="d-flex">
+                <span jhiTranslate="calendarApp.event.notificationTime">Notification Time</span>
+              </div>
+            </th>
+            <th scope="col">
+              <div class="d-flex">
+                <span jhiTranslate="calendarApp.event.status">Status</span>
+              </div>
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let event of events" data-cy="entityTable">
+            <td>{{ event.title }}</td>
+            <td>{{ event.location }}</td>
+            <td>{{ event.startTime | formatStandartDateTime }}</td>
+            <td>{{ event.endTime | formatStandartDateTime }}</td>
+            <td>{{ event.notificationTime | formatStandartDateTime }}</td>
+            <td>{{ event.status }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

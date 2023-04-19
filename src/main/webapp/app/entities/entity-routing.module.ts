@@ -19,6 +19,11 @@ import { RouterModule } from '@angular/router';
         data: { pageTitle: 'calendarApp.event.home.title' },
         loadChildren: () => import('./event/event.module').then(m => m.EventModule),
       },
+      {
+        path: 'calendar',
+        data: { pageTitle: 'calendarApp.event.home.title' },
+        loadChildren: () => import('./calendar/calendar.module').then(m => m.CalendarModule),
+      },
       /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
     ]),
   ],

@@ -1,8 +1,8 @@
 <div>
   <div class="d-flex justify-content-center">
     <div class="col-md-8">
-      <h2 jhiTranslate="settings.title" [translateValues]="{ username: settingsForm.value.login }" *ngIf="settingsForm.value.login">
-        User settings for [<strong>{{ settingsForm.value.login }}</strong
+      <h2 jhiTranslate="settings.title" [translateValues]="{ username: settingsForm.value.firstName + ' ' + settingsForm.value.lastName }" *ngIf="settingsForm.value.firstName">
+        User settings for [<strong>{{ settingsForm.value.firstName + ' ' + settingsForm.value.lastName }}</strong
         >]
       </h2>
 
@@ -12,7 +12,7 @@
 
       <jhi-alert-error></jhi-alert-error>
 
-      <form name="form" role="form" (ngSubmit)="save()" [formGroup]="settingsForm" *ngIf="settingsForm.value.login" novalidate>
+      <form name="form" role="form" (ngSubmit)="save()" [formGroup]="settingsForm" *ngIf="settingsForm.value.firstName">
         <div class="mb-3">
           <label class="form-label" for="firstName" jhiTranslate="settings.form.firstname">First Name</label>
           <input
@@ -150,6 +150,76 @@
             <option *ngFor="let language of languages" [value]="language">{{ language | findLanguageFromKey }}</option>
           </select>
         </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="calendarApp.userSettings.weekFirstDay" for="field_weekFirstDay">Week First Day</label>
+          <select class="form-control" id="field_weekFirstDay" name="weekFirstDay" formControlName="weekFirstDay" data-cy="weekFirstDay">
+            <option *ngFor="let day of weekFirstDays" [value]="day">{{ day }}</option>
+          </select>
+          <div
+            *ngIf="settingsForm.get('weekFirstDay')!.invalid && (settingsForm.get('weekFirstDay')!.dirty || settingsForm.get('weekFirstDay')!.touched)"
+          >
+            <small
+              class="form-text text-danger"
+              *ngIf="settingsForm.get('weekFirstDay')?.errors?.required"
+              jhiTranslate="entity.validation.required"
+            >
+              This field is required.
+            </small>
+            <small
+              class="form-text text-danger"
+              *ngIf="settingsForm.get('weekFirstDay')?.errors?.maxlength"
+              jhiTranslate="entity.validation.maxlength"
+              [translateValues]="{ max: 20 }"
+            >
+              This field cannot be longer than 20 characters.
+            </small>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="calendarApp.userSettings.weekNumber" for="field_weekNumber">Week Number</label>
+          <input
+            type="checkbox"
+            class="form-check"
+            name="weekNumber"
+            id="field_weekNumber"
+            data-cy="weekNumber"
+            formControlName="weekNumber"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="calendarApp.userSettings.keepTrash" for="field_keepTrash">Keep Trash</label>
+          <input type="checkbox" class="form-check" name="keepTrash" id="field_keepTrash" data-cy="keepTrash" formControlName="keepTrash" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="calendarApp.userSettings.emailLanguage" for="field_emailLanguage">Email Language</label>
+          <input
+            type="text"
+            class="form-control"
+            name="emailLanguage"
+            id="field_emailLanguage"
+            data-cy="emailLanguage"
+            formControlName="emailLanguage"
+          />
+          <div
+            *ngIf="
+              settingsForm.get('emailLanguage')!.invalid && (settingsForm.get('emailLanguage')!.dirty || settingsForm.get('emailLanguage')!.touched)
+            "
+          >
+            <small
+              class="form-text text-danger"
+              *ngIf="settingsForm.get('emailLanguage')?.errors?.maxlength"
+              jhiTranslate="entity.validation.maxlength"
+              [translateValues]="{ max: 10 }"
+            >
+              This field cannot be longer than 10 characters.
+            </small>
+          </div>
+        </div>
+
 
         <button
           type="submit"

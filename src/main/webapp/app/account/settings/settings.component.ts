@@ -15,6 +15,7 @@ const initialAccount: Account = {} as Account;
 export class SettingsComponent implements OnInit {
   success = false;
   languages = LANGUAGES;
+  weekFirstDays = ['SATURDAY', 'SUNDAY', 'MONDAY']
 
   settingsForm = new FormGroup({
     firstName: new FormControl(initialAccount.firstName, {
@@ -31,10 +32,10 @@ export class SettingsComponent implements OnInit {
     }),
     langKey: new FormControl(initialAccount.langKey, { nonNullable: true }),
 
-    activated: new FormControl(initialAccount.activated, { nonNullable: true }),
-    authorities: new FormControl(initialAccount.authorities, { nonNullable: true }),
-    imageUrl: new FormControl(initialAccount.imageUrl, { nonNullable: true }),
-    login: new FormControl(initialAccount.login, { nonNullable: true }),
+    weekNumber: new FormControl(false, { nonNullable: true }),
+    keepTrash: new FormControl(false, { nonNullable: true }),
+    weekFirstDay: new FormControl('', { nonNullable: true }),
+    emailLanguage: new FormControl('', { nonNullable: true }),
   });
 
   constructor(private accountService: AccountService, private translateService: TranslateService) {}
@@ -45,17 +46,18 @@ export class SettingsComponent implements OnInit {
         this.settingsForm.patchValue(account);
       }
     });
+    this.accountService.find().subscribe(res => {
+      if (res.body) this.settingsForm.patchValue(res.body)
+    })
   }
 
   save(): void {
     this.success = false;
 
     const account = this.settingsForm.getRawValue();
-    this.accountService.save(account).subscribe(() => {
+    this.accountService.saveMySettings(account).subscribe((res) => {
       this.success = true;
-
-      this.accountService.authenticate(account);
-
+      if (res.body) this.settingsForm.patchValue(res.body)
       if (account.langKey !== this.translateService.currentLang) {
         this.translateService.use(account.langKey);
       }

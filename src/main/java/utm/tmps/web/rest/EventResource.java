@@ -21,6 +21,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
+import utm.tmps.domain.Event;
+import utm.tmps.domain.enumeration.Month;
 import utm.tmps.repository.EventRepository;
 import utm.tmps.service.EventService;
 import utm.tmps.service.dto.EventDTO;
@@ -151,6 +153,17 @@ public class EventResource {
         Page<EventDTO> page = eventService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @GetMapping("/events/my")
+    public ResponseEntity<List<Event>> getMyEvents(
+        @RequestParam("year") Integer year,
+        @RequestParam("month") Month month,
+        @RequestParam("day") Integer day
+    ) {
+        log.debug("REST request to get a page of Events");
+        var page = eventService.findEventsByDay(day, month, year);
+        return ResponseEntity.ok().body(page);
     }
 
     /**
