@@ -68,7 +68,14 @@ public class TagService implements UserTagManagement {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public List<TagDTO> findAll() {
+    public Page<TagDTO> findAllCurrentUser(Pageable pageable) {
+        log.debug("Request to get all Tags");
+        return tagRepository.findAllByUserId(userService.getCurrentAuthenticatedUser(), pageable)
+            .map(tagMapper::toDto);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TagDTO> findAllCurrentUser() {
         log.debug("Request to get all Tags");
         return tagRepository.findAllByUserId(userService.getCurrentAuthenticatedUser())
             .stream()

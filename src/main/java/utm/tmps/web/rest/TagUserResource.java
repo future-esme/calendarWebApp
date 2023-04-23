@@ -3,9 +3,15 @@ package utm.tmps.web.rest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.PaginationUtil;
+import tech.jhipster.web.util.ResponseUtil;
+import utm.tmps.domain.Tag;
 import utm.tmps.service.ProxyUserTagManagement;
 import utm.tmps.service.TagService;
 import utm.tmps.service.dto.TagCreateDTO;
@@ -43,11 +49,26 @@ public class TagUserResource {
             .body(result);
     }
 
-    @GetMapping("/tags")
+    @GetMapping("/tags/all")
     public ResponseEntity<List<TagDTO>> getAllTags() {
         log.debug("REST request to get a page of Tags");
-        var page = tagService.findAll();
+        var page = tagService.findAllCurrentUser();
         return ResponseEntity.ok().body(page);
+    }
+
+    @GetMapping("/tags")
+    public ResponseEntity<List<TagDTO>> getTags(Pageable pageable) {
+        log.debug("REST request to get a page of Tags");
+        var page = tagService.findAllCurrentUser(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @GetMapping("/tags/{id}")
+    public ResponseEntity<Tag> getTag(@PathVariable UUID id) {
+        log.debug("REST request to get Tag : {}", id);
+        var tag = proxyUserTagManagement.findTag(id);
+        return ResponseUtil.wrapOrNotFound(tag);
     }
 
     @DeleteMapping("/tags/{id}")

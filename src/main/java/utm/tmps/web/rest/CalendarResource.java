@@ -26,6 +26,7 @@ public class CalendarResource {
     public ResponseEntity<CalendarDTO> getCalendarForCurrentUser(
         @RequestParam("month") Month month,
         @RequestParam("year") Integer year) {
+        log.debug("REST request ti get calendar for current user");
         return ResponseEntity.ok(calendarService.getCalendarForCurrentUser(month, year));
     }
 }

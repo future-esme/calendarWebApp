@@ -6,6 +6,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import tech.jhipster.config.JHipsterProperties;
+import utm.tmps.domain.Event;
 import utm.tmps.domain.User;
 
 /**
@@ -23,33 +25,26 @@ import utm.tmps.domain.User;
  * We use the {@link Async} annotation to send emails asynchronously.
  */
 @Service
-public class MailService {
+public class MailService implements EventListener {
 
     private final Logger log = LoggerFactory.getLogger(MailService.class);
 
     private static final String USER = "user";
+    private static final String EVENT = "user";
 
     private static final String BASE_URL = "baseUrl";
 
-    private final JHipsterProperties jHipsterProperties;
+    @Autowired
+    private JHipsterProperties jHipsterProperties;
 
-    private final JavaMailSender javaMailSender;
+    @Autowired
+    private JavaMailSender javaMailSender;
 
-    private final MessageSource messageSource;
+    @Autowired
+    private MessageSource messageSource;
 
-    private final SpringTemplateEngine templateEngine;
-
-    public MailService(
-        JHipsterProperties jHipsterProperties,
-        JavaMailSender javaMailSender,
-        MessageSource messageSource,
-        SpringTemplateEngine templateEngine
-    ) {
-        this.jHipsterProperties = jHipsterProperties;
-        this.javaMailSender = javaMailSender;
-        this.messageSource = messageSource;
-        this.templateEngine = templateEngine;
-    }
+    @Autowired
+    private SpringTemplateEngine templateEngine;
 
     @Async
     public void sendEmail(String to, String subject, String content, boolean isMultipart, boolean isHtml) {
@@ -93,6 +88,22 @@ public class MailService {
     }
 
     @Async
+    public void sendEmailFromTemplate(Event event, String templateName, String titleKey) {
+        if (event.getUserId().getEmail() == null) {
+            log.debug("Email doesn't exist for user '{}'", event.getUserId().getLogin());
+            return;
+        }
+        Locale locale = Locale.forLanguageTag(event.getUserId().getUserSettings().getEmailLanguage().name().toLowerCase());
+        Context context = new Context(locale);
+        context.setVariable(USER, event.getUserId());
+        context.setVariable(EVENT, event);
+        context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
+        String content = templateEngine.process(templateName, context);
+        String subject = messageSource.getMessage(titleKey, null, locale);
+        sendEmail(event.getUserId().getEmail(), subject, content, false, true);
+    }
+
+    @Async
     public void sendActivationEmail(User user) {
         log.debug("Sending activation email to '{}'", user.getEmail());
         sendEmailFromTemplate(user, "mail/activationEmail", "email.activation.title");
@@ -108,5 +119,11 @@ public class MailService {
     public void sendPasswordResetMail(User user) {
         log.debug("Sending password reset email to '{}'", user.getEmail());
         sendEmailFromTemplate(user, "mail/passwordResetEmail", "email.reset.title");
+    }
+
+    @Async
+    public void sendEventNotification(Event event) {
+        log.debug("Sending password reset email to '{}'", event.getUserId());
+        sendEmailFromTemplate(event, "mail/passwordResetEmail", "email.event.title");
     }
 }

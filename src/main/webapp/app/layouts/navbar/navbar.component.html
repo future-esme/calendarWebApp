@@ -190,6 +190,18 @@
                 <span jhiTranslate="global.menu.account.settings">Settings</span>
               </a>
             </li>
+            <li>
+              <a
+                class="dropdown-item"
+                routerLink="my-tags"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="collapseNavbar()"
+              >
+                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                <span jhiTranslate="global.menu.entities.tag">Tag</span>
+              </a>
+            </li>
             <li *ngSwitchCase="true">
               <a
                 class="dropdown-item"

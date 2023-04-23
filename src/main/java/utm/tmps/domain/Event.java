@@ -1,10 +1,15 @@
 package utm.tmps.domain;
 
+import utm.tmps.domain.enumeration.EventStatus;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.UUID;
 
 /**
@@ -51,9 +56,8 @@ public class Event implements Serializable {
     @Column(name = "notification_time")
     private Instant notificationTime;
 
-    @Size(max = 50)
-    @Column(name = "status", length = 50)
-    private String status;
+    @Column(name = "status")
+    private EventStatus status;
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -63,163 +67,121 @@ public class Event implements Serializable {
     @JoinColumn(name = "tag_id", referencedColumnName = "id")
     private Tag tagId;
 
+    public Event() {
+    }
+
+    public Event(EventBuilder builder) {
+        this.title = builder.title;
+        this.location = builder.location;
+        this.startTime = builder.startTime;
+        this.endTime = builder.endTime;
+        this.notes = builder.notes;
+        this.sendPushNotification = builder.sendPushNotification;
+        this.sendEmailNotification = builder.sendEmailNotification;
+        this.notificationTime = builder.notificationTime;
+        this.status = builder.status;
+        this.userId = builder.userId;
+        this.tagId = builder.tagId;
+    }
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public UUID getId() {
-        return this.id;
+        return id;
     }
 
-    public Event id(UUID id) {
-        this.setId(id);
-        return this;
+    public String getTitle() {
+        return title;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public Instant getStartTime() {
+        return startTime;
+    }
+
+    public Instant getEndTime() {
+        return endTime;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public Boolean getSendPushNotification() {
+        return sendPushNotification;
+    }
+
+    public Boolean getSendEmailNotification() {
+        return sendEmailNotification;
+    }
+
+    public Instant getNotificationTime() {
+        return notificationTime;
+    }
+
+    public EventStatus getStatus() {
+        return status;
+    }
+
+    public User getUserId() {
+        return userId;
+    }
+
+    public Tag getTagId() {
+        return tagId;
     }
 
     public void setId(UUID id) {
         this.id = id;
     }
 
-    public String getTitle() {
-        return this.title;
-    }
-
-    public Event title(String title) {
-        this.setTitle(title);
-        return this;
-    }
-
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getLocation() {
-        return this.location;
-    }
-
-    public Event location(String location) {
-        this.setLocation(location);
-        return this;
     }
 
     public void setLocation(String location) {
         this.location = location;
     }
 
-    public Instant getStartTime() {
-        return this.startTime;
-    }
-
-    public Event startTime(Instant startTime) {
-        this.setStartTime(startTime);
-        return this;
-    }
-
     public void setStartTime(Instant startTime) {
         this.startTime = startTime;
-    }
-
-    public Instant getEndTime() {
-        return this.endTime;
-    }
-
-    public Event endTime(Instant endTime) {
-        this.setEndTime(endTime);
-        return this;
     }
 
     public void setEndTime(Instant endTime) {
         this.endTime = endTime;
     }
 
-    public String getNotes() {
-        return this.notes;
-    }
-
-    public Event notes(String notes) {
-        this.setNotes(notes);
-        return this;
-    }
-
     public void setNotes(String notes) {
         this.notes = notes;
-    }
-
-    public Boolean getSendPushNotification() {
-        return this.sendPushNotification;
-    }
-
-    public Event sendPushNotification(Boolean sendPushNotification) {
-        this.setSendPushNotification(sendPushNotification);
-        return this;
     }
 
     public void setSendPushNotification(Boolean sendPushNotification) {
         this.sendPushNotification = sendPushNotification;
     }
 
-    public Boolean getSendEmailNotification() {
-        return this.sendEmailNotification;
-    }
-
-    public Event sendEmailNotification(Boolean sendEmailNotification) {
-        this.setSendEmailNotification(sendEmailNotification);
-        return this;
-    }
-
     public void setSendEmailNotification(Boolean sendEmailNotification) {
         this.sendEmailNotification = sendEmailNotification;
-    }
-
-    public Instant getNotificationTime() {
-        return this.notificationTime;
-    }
-
-    public Event notificationTime(Instant notificationTime) {
-        this.setNotificationTime(notificationTime);
-        return this;
     }
 
     public void setNotificationTime(Instant notificationTime) {
         this.notificationTime = notificationTime;
     }
 
-    public String getStatus() {
-        return this.status;
-    }
-
-    public Event status(String status) {
-        this.setStatus(status);
-        return this;
-    }
-
-    public void setStatus(String status) {
+    public void setStatus(EventStatus status) {
         this.status = status;
     }
 
-    public User getUserId() {
-        return this.userId;
+    public void setUserId(User userId) {
+        this.userId = userId;
     }
 
-    public void setUserId(User user) {
-        this.userId = user;
+    public void setTagId(Tag tagId) {
+        this.tagId = tagId;
     }
 
-    public Event userId(User user) {
-        this.setUserId(user);
-        return this;
-    }
-
-    public Tag getTagId() {
-        return this.tagId;
-    }
-
-    public void setTagId(Tag tag) {
-        this.tagId = tag;
-    }
-
-    public Event tagId(Tag tag) {
-        this.setTagId(tag);
-        return this;
-    }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
@@ -255,5 +217,68 @@ public class Event implements Serializable {
             ", notificationTime='" + getNotificationTime() + "'" +
             ", status='" + getStatus() + "'" +
             "}";
+    }
+
+    public static class EventBuilder {
+        private String title;
+        private String location;
+        private Instant startTime;
+        private Instant endTime;
+        private String notes;
+        private Boolean sendPushNotification;
+        private Boolean sendEmailNotification;
+        private Instant notificationTime;
+        private EventStatus status;
+        private User userId;
+        private Tag tagId;
+
+        public EventBuilder(String title, String location, LocalDate eventDay, User userId, Tag tagId) {
+            this.title = title;
+            this.location = location;
+            this.startTime = eventDay.atStartOfDay().toInstant(ZoneOffset.UTC);
+            this.endTime = eventDay.atTime(23,59).toInstant(ZoneOffset.UTC);
+            this.userId = userId;
+            this.tagId = tagId;
+            this.status = EventStatus.NO_STATUS;
+        }
+
+        public EventBuilder(String title, String location, Instant startTime, Instant endTime, User userId, Tag tagId) {
+            this.title = title;
+            this.location = location;
+            this.startTime = startTime;
+            this.endTime = endTime;
+            this.userId = userId;
+            this.tagId = tagId;
+            this.status = EventStatus.NO_STATUS;
+        }
+
+        public EventBuilder location(String location) {
+            this.location = location;
+            return this;
+        }
+
+        public EventBuilder notes(String notes) {
+            this.notes = notes;
+            return this;
+        }
+
+        public EventBuilder sendPushNotification(Boolean sendPushNotification) {
+            this.sendPushNotification = sendPushNotification;
+            return this;
+        }
+
+        public EventBuilder sendEmailNotification(Boolean sendEmailNotification) {
+            this.sendEmailNotification = sendEmailNotification;
+            return this;
+        }
+
+        public EventBuilder notificationTime(Instant notificationTime) {
+            this.notificationTime = notificationTime;
+            return this;
+        }
+
+        public Event build() {
+            return new Event(this);
+        }
     }
 }

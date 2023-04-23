@@ -27,8 +27,16 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
     @Query(value = """
         select * from event
         where user_id = :userId and (
-        (start_time > :startTime and start_time < :endTime)
-        or (end_time < :endTime and end_time > :startTime));
+        (start_time >= :startTime and start_time <= :endTime)
+        or (end_time <= :endTime and end_time >= :startTime));
     """, nativeQuery = true)
     List<Event> findUserEventByDay(@Param("userId") UUID userStart, @Param("startTime") Instant startTime, @Param("endTime") Instant endTime);
+
+    @Query(value = """
+        select * from event
+        where notification_time >= :startTime
+        and notification_time <= :endTime
+        and (event.send_email_notification is true || event.send_push_notification is true)
+    """, nativeQuery = true)
+    List<Event> findEventsNeedToBeNotified(@Param("startTime") Instant startTime, @Param("endTime") Instant endTime);
 }

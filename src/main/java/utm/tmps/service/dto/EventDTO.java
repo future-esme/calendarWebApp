@@ -1,18 +1,17 @@
 package utm.tmps.service.dto;
 
-import java.io.Serializable;
+import utm.tmps.domain.enumeration.EventStatus;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.Instant;
-import java.util.Objects;
+import java.time.LocalDate;
 import java.util.UUID;
-import javax.validation.constraints.*;
 
 /**
  * A DTO for the {@link utm.tmps.domain.Event} entity.
  */
-@SuppressWarnings("common-java:DuplicatedBlocks")
-public class EventDTO implements Serializable {
-
-    private UUID id;
+public class EventDTO {
 
     @NotNull
     @Size(max = 255)
@@ -21,10 +20,8 @@ public class EventDTO implements Serializable {
     @Size(max = 255)
     private String location;
 
-    @NotNull
     private Instant startTime;
 
-    @NotNull
     private Instant endTime;
 
     @Size(max = 1024)
@@ -36,20 +33,15 @@ public class EventDTO implements Serializable {
 
     private Instant notificationTime;
 
-    @Size(max = 50)
-    private String status;
+    private LocalDate eventDate;
 
-    private UserDTO userId;
+    private EventStatus status;
 
-    private TagDTO tagId;
+    @NotNull
+    private Boolean isAllDay;
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
+    @NotNull
+    private UUID tagId;
 
     public String getTitle() {
         return title;
@@ -115,56 +107,42 @@ public class EventDTO implements Serializable {
         this.notificationTime = notificationTime;
     }
 
-    public String getStatus() {
+    public EventStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(EventStatus status) {
         this.status = status;
     }
 
-    public UserDTO getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UserDTO userId) {
-        this.userId = userId;
-    }
-
-    public TagDTO getTagId() {
+    public UUID getTagId() {
         return tagId;
     }
 
-    public void setTagId(TagDTO tagId) {
+    public void setTagId(UUID tagId) {
         this.tagId = tagId;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof EventDTO)) {
-            return false;
-        }
-
-        EventDTO eventDTO = (EventDTO) o;
-        if (this.id == null) {
-            return false;
-        }
-        return Objects.equals(this.id, eventDTO.id);
+    public LocalDate getEventDate() {
+        return eventDate;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.id);
+    public void setEventDate(LocalDate eventDate) {
+        this.eventDate = eventDate;
+    }
+
+    public Boolean getIsAllDay() {
+        return isAllDay;
+    }
+
+    public void setIsAllDay(Boolean allDay) {
+        isAllDay = allDay;
     }
 
     // prettier-ignore
     @Override
     public String toString() {
         return "EventDTO{" +
-            "id='" + getId() + "'" +
             ", title='" + getTitle() + "'" +
             ", location='" + getLocation() + "'" +
             ", startTime='" + getStartTime() + "'" +
@@ -174,7 +152,6 @@ public class EventDTO implements Serializable {
             ", sendEmailNotification='" + getSendEmailNotification() + "'" +
             ", notificationTime='" + getNotificationTime() + "'" +
             ", status='" + getStatus() + "'" +
-            ", userId=" + getUserId() +
             ", tagId=" + getTagId() +
             "}";
     }

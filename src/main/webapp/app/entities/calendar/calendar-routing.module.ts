@@ -1,7 +1,7 @@
 import {RouterModule, Routes} from "@angular/router";
 import {UserRouteAccessService} from "../../core/auth/user-route-access.service";
 import {NgModule} from "@angular/core";
-import {CalendarMainComponent} from "./calendar-main.component";
+import {CalendarMainComponent} from "./main/calendar-main.component";
 
 const tagRoute: Routes = [
   {

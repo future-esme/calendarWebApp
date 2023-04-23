@@ -1,0 +1,197 @@
+<form name="editForm" [formGroup]="editForm" (ngSubmit)="create()">
+  <div class="modal-header">
+    <h4 class="modal-title" data-cy="tagDeleteDialogHeading">Create event</h4>
+
+    <button type="button" class="btn-close" data-dismiss="modal" aria-hidden="true" (click)="cancel()"></button>
+  </div>
+
+  <div class="modal-body">
+    <jhi-alert-error></jhi-alert-error>
+    <div class="mb-3">
+      <label class="form-label" jhiTranslate="calendarApp.event.title" for="field_title">Title</label>
+      <input type="text" class="form-control" name="title" id="field_title" data-cy="title" formControlName="title" />
+      <div *ngIf="editForm.get('title')!.invalid && (editForm.get('title')!.dirty || editForm.get('title')!.touched)">
+        <small class="form-text text-danger" *ngIf="editForm.get('title')?.errors?.required" jhiTranslate="entity.validation.required">
+          This field is required.
+        </small>
+        <small
+          class="form-text text-danger"
+          *ngIf="editForm.get('title')?.errors?.maxlength"
+          jhiTranslate="entity.validation.maxlength"
+          [translateValues]="{ max: 255 }"
+        >
+          This field cannot be longer than 255 characters.
+        </small>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" jhiTranslate="calendarApp.event.location" for="field_location">Location</label>
+      <input type="text" class="form-control" name="location" id="field_location" data-cy="location" formControlName="location" />
+      <div *ngIf="editForm.get('location')!.invalid && (editForm.get('location')!.dirty || editForm.get('location')!.touched)">
+        <small
+          class="form-text text-danger"
+          *ngIf="editForm.get('location')?.errors?.maxlength"
+          jhiTranslate="entity.validation.maxlength"
+          [translateValues]="{ max: 255 }"
+        >
+          This field cannot be longer than 255 characters.
+        </small>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="field_isAllDay"
+      >Is all day</label
+      >
+      <div class="form-check form-switch">
+        <input
+          type="checkbox"
+          class="form-check form-check-input"
+          name="isAllDay"
+          id="field_isAllDay"
+          data-cy="isAllDay"
+          formControlName="isAllDay"
+        />
+      </div>
+    </div>
+
+    <div class="mb-3" *ngIf="!editForm.get('isAllDay')!.value">
+      <label class="form-label" jhiTranslate="calendarApp.event.startTime" for="field_startTime">Start Time</label>
+      <div class="d-flex">
+        <input
+          id="field_startTime"
+          data-cy="startTime"
+          type="datetime-local"
+          class="form-control"
+          name="startTime"
+          formControlName="startTime"
+          placeholder="YYYY-MM-DD HH:mm"
+        />
+      </div>
+    </div>
+
+    <div class="mb-3" *ngIf="!editForm.get('isAllDay')!.value">
+      <label class="form-label" jhiTranslate="calendarApp.event.endTime" for="field_endTime">End Time</label>
+      <div class="d-flex">
+        <input
+          id="field_endTime"
+          data-cy="endTime"
+          type="datetime-local"
+          class="form-control"
+          name="endTime"
+          formControlName="endTime"
+          placeholder="YYYY-MM-DD HH:mm"
+        />
+      </div>
+    </div>
+
+    <div class="mb-3" *ngIf="editForm.get('isAllDay')!.value">
+      <label class="form-label" for="field_eventDate">Event Date</label>
+      <div class="d-flex">
+        <input
+          id="field_eventDate"
+          data-cy="eventDate"
+          type="datetime-local"
+          class="form-control"
+          name="eventDate"
+          formControlName="eventDate"
+          placeholder="YYYY-MM-DD"
+        />
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" jhiTranslate="calendarApp.event.notes" for="field_notes">Notes</label>
+      <input type="text" class="form-control" name="notes" id="field_notes" data-cy="notes" formControlName="notes" />
+      <div *ngIf="editForm.get('notes')!.invalid && (editForm.get('notes')!.dirty || editForm.get('notes')!.touched)">
+        <small
+          class="form-text text-danger"
+          *ngIf="editForm.get('notes')?.errors?.maxlength"
+          jhiTranslate="entity.validation.maxlength"
+          [translateValues]="{ max: 1024 }"
+        >
+          This field cannot be longer than 1024 characters.
+        </small>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" jhiTranslate="calendarApp.event.sendPushNotification" for="field_sendPushNotification"
+      >Send Push Notification</label
+      >
+     <div class="form-check form-switch">
+       <input
+         type="checkbox"
+         class="form-check form-check-input"
+         name="sendPushNotification"
+         id="field_sendPushNotification"
+         data-cy="sendPushNotification"
+         formControlName="sendPushNotification"
+       />
+     </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" jhiTranslate="calendarApp.event.sendEmailNotification" for="field_sendEmailNotification"
+      >Send Email Notification</label
+      >
+      <div class="form-check form-switch">
+        <input
+          type="checkbox"
+          class="form-check form-check-input"
+          name="sendEmailNotification"
+          id="field_sendEmailNotification"
+          data-cy="sendEmailNotification"
+          formControlName="sendEmailNotification"
+        />
+      </div>
+    </div>
+
+    <div class="mb-3" *ngIf="editForm.get('sendPushNotification')!.value || editForm.get('sendEmailNotification')!.value">
+      <label class="form-label" jhiTranslate="calendarApp.event.notificationTime" for="field_notificationTime">Notification Time</label>
+      <div class="d-flex">
+        <input
+          id="field_notificationTime"
+          data-cy="notificationTime"
+          type="datetime-local"
+          class="form-control"
+          name="notificationTime"
+          formControlName="notificationTime"
+          placeholder="YYYY-MM-DD HH:mm"
+        />
+      </div>
+    </div>
+
+   <!-- <div class="mb-3">
+      <label class="form-label" jhiTranslate="calendarApp.event.status" for="field_status">Status</label>
+      <input type="text" class="form-control" name="status" id="field_status" data-cy="status" formControlName="status" />
+      <div *ngIf="editForm.get('status')!.invalid && (editForm.get('status')!.dirty || editForm.get('status')!.touched)">
+        <small
+          class="form-text text-danger"
+          *ngIf="editForm.get('status')?.errors?.maxlength"
+          jhiTranslate="entity.validation.maxlength"
+          [translateValues]="{ max: 50 }"
+        >
+          This field cannot be longer than 50 characters.
+        </small>
+      </div>
+    </div>-->
+    <div class="mb-3">
+      <label class="form-label" jhiTranslate="calendarApp.event.tagId" for="field_tagId">Tag Id</label>
+      <select class="form-control" id="field_tagId" data-cy="tagId" name="tagId" formControlName="tagId">
+        <option [ngValue]="tagOption.id" *ngFor="let tagOption of tags" style="{{'background-color: ' + tagOption.color }}">{{ tagOption.name }}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancel()">
+      <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+    </button>
+
+    <button id="jhi-confirm-delete-tag" data-cy="entityConfirmDeleteButton" type="submit" class="btn btn-info">
+      <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">save</span>
+    </button>
+  </div>
+</form>

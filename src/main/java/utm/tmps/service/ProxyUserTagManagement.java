@@ -2,8 +2,10 @@ package utm.tmps.service;
 
 import org.springframework.stereotype.Service;
 import utm.tmps.domain.Authority;
+import utm.tmps.domain.Tag;
 import utm.tmps.web.rest.errors.NotFoundException;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static utm.tmps.security.AuthoritiesConstants.ADMIN;
@@ -31,4 +33,17 @@ public class ProxyUserTagManagement implements UserTagManagement {
         }
     }
 
+    @Override
+    public Optional<Tag> findTag(UUID id) {
+        var currentUser = userService.getCurrentAuthenticatedUser();
+        var tag = tagService.findTag(id);
+        if (tag.isEmpty()) {
+            throw new NotFoundException("tag");
+        }
+        if (tag.get().getUserId().getLogin().equals(currentUser.getLogin()) ||
+            currentUser.getAuthorities().stream().map(Authority::getName).toList().contains(ADMIN)) {
+            return tag;
+        }
+        throw new NotFoundException("tag");
+    }
 }

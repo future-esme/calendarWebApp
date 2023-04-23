@@ -1,0 +1,214 @@
+<div>
+ <div class="col-md-8">
+   <h2 data-cy="tagDetailsHeading">
+    <span>
+    {{ selectedDay }}
+      {{ selectedMonth }},
+      {{ year }}
+    </span>
+     <div class="d-flex btn-group float-end">
+       <button
+         class="btn btn-outline-info btn-sm btn-title-rounded"
+         (click)="prevMonth()"
+         placement="top"
+         container="body">
+         <fa-icon icon="arrow-left" class="fa-2x"></fa-icon>
+       </button>
+       <button
+         class="btn btn-outline-info btn-sm btn-title-rounded"
+         (click)="nextMonth()"
+         placement="top"
+         container="body">
+         <fa-icon icon="arrow-right" class="fa-2x"></fa-icon>
+       </button>
+     </div>
+     <div class="d-flex btn-group float-end" style="margin-right: 1rem">
+       <button
+         class="btn btn-outline-info btn-sm btn-title-rounded"
+         (click)="addEvent()"
+         placement="top"
+         container="body">
+         <fa-icon icon="plus" class="fa-2x" style="padding: 0.25rem"></fa-icon>
+       </button>
+     </div>
+   </h2>
+ </div>
+  <div class="row">
+    <div class="jh-card card col-md-8 mx-2">
+      <div class="table-responsive table-entities" id="entities" *ngIf="calendar">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th *ngIf="calendar.weeks && calendar.weeks[0].weekNumber != null" class="col-half-one">
+              <div class="d-flex float-end">
+                <span></span>
+              </div>
+            </th>
+            <th *ngFor="let weekDay of calendar.weekDays" class="col-1">
+              <div class="d-flex float-end">
+                <span jhiTranslate="calendar.weekDays.{{weekDay}}"></span>
+              </div>
+            </th>
+          </tr>
+          </thead>
+        </table>
+        <table class="table table-striped" aria-describedby="page-heading" *ngFor="let week of calendar.weeks">
+          <thead>
+          <tr>
+            <th *ngIf="calendar.weeks && calendar.weeks[0].weekNumber != null" class="col-half-one week-number">
+              <span></span>
+            </th>
+            <th scope="col" *ngFor="let day of week.days" class="{{isSelectedDay(day) ? 'col-1 bg-info radius-top' : 'col-1'}}">
+              <div class="d-flex float-end" (click)="showEventsDay(day)" style="{{day.targetMonth ? 'cursor: pointer' : ''}}">
+                <span class="{{isSelectedDay(day) ? 'text-light' : 'text-muted'}}" *ngIf="!day.targetMonth">{{ day.day }}</span>
+                <span class="{{isSelectedDay(day) ? 'text-light' : ''}}" *ngIf="day.targetMonth">{{ day.day }}</span>
+              </div>
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr data-cy="entityTable">
+            <td *ngIf="calendar.weeks && calendar.weeks[0].weekNumber != null" class="week-number">
+              <span>{{week.weekNumber}}</span>
+            </td>
+            <td *ngFor="let day of week.days" class="{{isSelectedDay(day) ? 'col-1 bg-info radius-bottom' : 'col-1'}}">
+              <div (click)="showEventsDay(day)" style="{{day.targetMonth ? 'cursor: pointer' : ''}}">
+                <span *ngIf="day.hasEvents && !isSelectedDay(day)"
+                    style="background-color: blueviolet" class="calendar-day"></span>
+                <span *ngIf="day.hasEvents && isSelectedDay(day)"
+                      style="background-color: white" class="calendar-day"></span>
+                <span *ngIf="!day.hasEvents" class="calendar-day"></span>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="jh-card card col-md-3 mx-2">
+      <div *ngIf="event">
+        <h2 data-cy="eventDetailsHeading"><span>{{ event.title }}</span></h2>
+
+        <hr />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="calendarApp.event.location" *ngIf="event.location != null">Location</span></dt>
+          <dd *ngIf="event.location != null">
+            <span>{{ event.location }}</span>
+          </dd>
+          <dt><span jhiTranslate="calendarApp.event.startTime">Start Time</span></dt>
+          <dd>
+            <span>{{ event.startTime | formatStandartDateTime }}</span>
+          </dd>
+          <dt><span jhiTranslate="calendarApp.event.endTime">End Time</span></dt>
+          <dd>
+            <span>{{ event.endTime | formatStandartDateTime }}</span>
+          </dd>
+          <dt *ngIf="event.notes != null"><span jhiTranslate="calendarApp.event.notes">Notes</span></dt>
+          <dd *ngIf="event.notes != null">
+            <span>{{ event.notes }}</span>
+          </dd>
+          <dt><span jhiTranslate="calendarApp.event.sendPushNotification">Send Push Notification</span></dt>
+          <dd>
+            <div class="form-check form-switch">
+              <input
+                type="checkbox"
+                class="form-check form-check-input disable-action"
+                id="{{event.id + 'push'}}"
+                [checked]="event.sendPushNotification"
+              />
+            </div>
+          <dt><span jhiTranslate="calendarApp.event.sendEmailNotification">Send Email Notification</span></dt>
+          <dd>
+            <div class="form-check form-switch">
+              <input
+                type="checkbox"
+                class="form-check form-check-input disable-action"
+                id="{{event.id + 'email'}}"
+                [checked]="event.sendEmailNotification"
+              />
+            </div>
+          </dd>
+          <dt><span jhiTranslate="calendarApp.event.notificationTime">Notification Time</span></dt>
+          <dd>
+            <span>{{ event.notificationTime | formatStandartDateTime }}</span>
+          </dd>
+          <dt><span jhiTranslate="calendarApp.event.status">Status</span></dt>
+          <dd>
+            <span>{{ event.status }}</span>
+          </dd>
+          <!--<dt><span jhiTranslate="calendarApp.event.userId">User Id</span></dt>
+          <dd>
+            <span>{{ event.userId?.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="calendarApp.event.tagId">Tag Id</span></dt>
+          <dd>
+            <div *ngIf="event.tagId">
+              <a [routerLink]="['/tag', event.tagId.id, 'view']">{{ event.tagId.id }}</a>
+            </div>
+          </dd>-->
+          <h2>
+            <button
+              class="btn btn-outline-info btn-sm btn-title-rounded"
+              (click)="deleteEvent(event.id)"
+              placement="top"
+              container="body">
+              <fa-icon icon="trash" class="px-1"></fa-icon>
+              <span jhiTranslate="entity.action.delete"></span>
+            </button>
+          </h2>
+        </dl>
+      </div>
+    </div>
+    <div class="jh-card card col-md-8 mx-2 mt-2">
+      <div class="table-responsive table-entities" id="events" *ngIf="events && events.length > 0">
+        <table class="table table-hover" aria-describedby="page-heading">
+          <thead>
+          <tr>
+            <th scope="col">
+              <div class="d-flex">
+                <span jhiTranslate="calendarApp.event.title">Title</span>
+              </div>
+            </th>
+            <th scope="col">
+              <div class="d-flex">
+                <span jhiTranslate="calendarApp.event.location">Location</span>
+              </div>
+            </th>
+            <th scope="col">
+              <div class="d-flex">
+                <span jhiTranslate="calendarApp.event.startTime">Start Time</span>
+              </div>
+            </th>
+            <th scope="col">
+              <div class="d-flex">
+                <span jhiTranslate="calendarApp.event.endTime">End Time</span>
+              </div>
+            </th>
+            <th scope="col">
+              <div class="d-flex">
+                <span jhiTranslate="calendarApp.event.notificationTime">Notification Time</span>
+              </div>
+            </th>
+            <th scope="col">
+              <div class="d-flex">
+                <span jhiTranslate="calendarApp.event.status">Status</span>
+              </div>
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let event of events" data-cy="entityTable" (click)="displayEvent(event.id)" style="cursor: pointer">
+            <td>{{ event.title }}</td>
+            <td>{{ event.location }}</td>
+            <td>{{ event.startTime | formatStandartDateTime }}</td>
+            <td>{{ event.endTime | formatStandartDateTime }}</td>
+            <td>{{ event.notificationTime | formatStandartDateTime }}</td>
+            <td>{{ event.status }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
