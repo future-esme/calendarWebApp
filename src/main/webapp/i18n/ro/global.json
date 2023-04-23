@@ -13,6 +13,7 @@
         "tag": "Tag",
         "userSettings": "User Settings",
         "event": "Event",
+        "notifications": "Notifications",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {

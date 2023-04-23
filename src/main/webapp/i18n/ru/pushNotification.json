@@ -1,0 +1,26 @@
+{
+  "calendarApp": {
+    "pushNotification": {
+      "home": {
+        "title": "Push Notifications",
+        "refreshListLabel": "Обновить список",
+        "createLabel": "Создать новый Push Notification",
+        "createOrEditLabel": "Создать или отредактировать Push Notification",
+        "notFound": "Push Notifications не найдено"
+      },
+      "created": "Новый Push Notification создан с идентификатором {{ param }}",
+      "updated": "Push Notification обновлен с идентификатором {{ param }}",
+      "deleted": "Push Notification удален с идентификатором {{ param }}",
+      "delete": {
+        "question": "Вы уверены что хотите удалить Push Notification {{ id }}?"
+      },
+      "detail": {
+        "title": "Push Notification"
+      },
+      "id": "Id",
+      "title": "Title",
+      "content": "Content",
+      "userId": "User Id"
+    }
+  }
+}

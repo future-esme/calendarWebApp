@@ -1,0 +1,14 @@
+entity PushNotification {
+    id UUID,
+    title String maxlength(255) minlength(3) required,
+    content String maxlength(1024)
+}
+
+relationship OneToOne {
+    PushNotification{userId} to User
+}
+
+
+dto * with mapstruct
+service * with serviceClass
+paginate * with pagination

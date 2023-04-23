@@ -6,7 +6,6 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -25,26 +24,32 @@ import utm.tmps.domain.User;
  * We use the {@link Async} annotation to send emails asynchronously.
  */
 @Service
-public class MailService implements EventListener {
+public class MailService {
 
     private final Logger log = LoggerFactory.getLogger(MailService.class);
 
     private static final String USER = "user";
-    private static final String EVENT = "user";
+    private static final String EVENT = "event";
 
     private static final String BASE_URL = "baseUrl";
 
-    @Autowired
-    private JHipsterProperties jHipsterProperties;
+    private final JHipsterProperties jHipsterProperties;
 
-    @Autowired
-    private JavaMailSender javaMailSender;
+    private final JavaMailSender javaMailSender;
 
-    @Autowired
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
 
-    @Autowired
-    private SpringTemplateEngine templateEngine;
+    private final SpringTemplateEngine templateEngine;
+
+    public MailService(JHipsterProperties jHipsterProperties,
+                       JavaMailSender javaMailSender,
+                       MessageSource messageSource,
+                       SpringTemplateEngine templateEngine) {
+        this.jHipsterProperties = jHipsterProperties;
+        this.javaMailSender = javaMailSender;
+        this.messageSource = messageSource;
+        this.templateEngine = templateEngine;
+    }
 
     @Async
     public void sendEmail(String to, String subject, String content, boolean isMultipart, boolean isHtml) {
@@ -119,11 +124,5 @@ public class MailService implements EventListener {
     public void sendPasswordResetMail(User user) {
         log.debug("Sending password reset email to '{}'", user.getEmail());
         sendEmailFromTemplate(user, "mail/passwordResetEmail", "email.reset.title");
-    }
-
-    @Async
-    public void sendEventNotification(Event event) {
-        log.debug("Sending password reset email to '{}'", event.getUserId());
-        sendEmailFromTemplate(event, "mail/passwordResetEmail", "email.event.title");
     }
 }

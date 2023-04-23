@@ -5,6 +5,8 @@ import {CalendarService} from "../service/calendar.service";
 import {EventDTO} from "../calendar.model";
 import {ITag} from "../../user-tags/tag.model";
 import dayjs from 'dayjs/esm';
+import utc from 'dayjs/esm/plugin/utc';
+import timezone from 'dayjs/esm/plugin/timezone';
 import {DATE_TIME_FORMAT} from "../../../config/input.constants";
 
 @Component({
@@ -28,6 +30,8 @@ export class CreateEventModal implements OnInit {
     status: [null, [Validators.required]],
     tagId: [null, [Validators.required]],
   });
+
+  timeZone = 'Europe/Chisinau'
   constructor(protected calendarService: CalendarService, protected activeModal: NgbActiveModal, protected fb: FormBuilder) {}
 
   cancel(): void {
@@ -37,6 +41,8 @@ export class CreateEventModal implements OnInit {
     this.calendarService.queryAllTags().subscribe(res => {
       this.tags = res.body ?? []
     })
+    dayjs.extend(timezone);
+    dayjs.extend(utc)
   }
 
   create() {
@@ -56,15 +62,15 @@ export class CreateEventModal implements OnInit {
     }
     eventNew.isAllDay = this.editForm.get('isAllDay')!.value
     if (!this.editForm.get('isAllDay')!.value) {
-      eventNew.startTime = dayjs(this.editForm.get('startTime')!.value, DATE_TIME_FORMAT)
-      eventNew.endTime = dayjs(this.editForm.get('endTime')!.value, DATE_TIME_FORMAT)
+      eventNew.startTime = dayjs(this.editForm.get('startTime')!.value, DATE_TIME_FORMAT).tz(this.timeZone)
+      eventNew.endTime = dayjs(this.editForm.get('endTime')!.value, DATE_TIME_FORMAT).tz(this.timeZone)
     } else {
-      eventNew.eventDate = dayjs(this.editForm.get('eventDate')!.value, DATE_TIME_FORMAT)
+      eventNew.eventDate = dayjs(this.editForm.get('eventDate')!.value, DATE_TIME_FORMAT).tz(this.timeZone)
     }
-    if (this.editForm.get('sendPushNotification')!.value || this.editForm.get('sendPushNotification')!.value) {
-      eventNew.notificationTime = dayjs(this.editForm.get('notificationTime')!.value, DATE_TIME_FORMAT)
+    if (this.editForm.get('sendPushNotification')!.value || this.editForm.get('sendEmailNotification')!.value) {
+      eventNew.notificationTime = dayjs(this.editForm.get('notificationTime')!.value, DATE_TIME_FORMAT).tz(this.timeZone)
     }
-    eventNew.sendPushNotification = this.editForm.get('sendPushNotification')!.value
+    eventNew.sendEmailNotification = this.editForm.get('sendEmailNotification')!.value
     eventNew.sendPushNotification = this.editForm.get('sendPushNotification')!.value
 
     return eventNew;

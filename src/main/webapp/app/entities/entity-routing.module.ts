@@ -29,6 +29,11 @@ import { RouterModule } from '@angular/router';
         data: { pageTitle: 'calendarApp.tag.home.title' },
         loadChildren: () => import('./user-tags/user-tags.module').then(m => m.UserTagsModule),
       },
+      {
+        path: 'my-push',
+        data: { pageTitle: 'calendarApp.pushNotification.home.title' },
+        loadChildren: () => import('./push-notification/push-notification.module').then(m => m.PushNotificationModule),
+      },
       /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
     ]),
   ],

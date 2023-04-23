@@ -12,9 +12,6 @@
 <p th:text="#{email.event.text12(${event.startTime})}">
 </p>
 <p>
-  <a th:with="url=(@{|${baseUrl}/account/event/finish?key=${user.eventKey}|})" th:href="${url}" th:text="${url}">Login link</a>
-</p>
-<p>
   <span th:text="#{email.event.text2}">Regards, </span>
   <br />
   <em th:text="#{email.signature}">JHipster.</em>

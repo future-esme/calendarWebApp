@@ -16,11 +16,11 @@ import utm.tmps.domain.User;
 @Repository
 public interface EventRepository extends JpaRepository<Event, UUID> {
     @Query(value = """
-        select cast(date_part('day', start_time) as int) from event
-        where (date_part('month', start_time) = :month and date_part('year', start_time) = :year)
+        select cast(date_part('day', start_time + interval '3 hours') as int) from event
+        where (date_part('month', start_time + interval '3 hours') = :month and date_part('year', start_time) = :year)
            union
-        select cast(date_part('day', end_time) as int) from event
-        where (date_part('month', end_time) = :month and date_part('year', end_time) = :year);
+        select cast(date_part('day', end_time + interval '3 hours') as int) from event
+        where (date_part('month', end_time + interval '3 hours') = :month and date_part('year', end_time) = :year);
     """, nativeQuery = true)
     List<Integer> getDaysWithEvents(@Param("month") Integer month, @Param("year") Integer year);
 
@@ -34,9 +34,9 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
 
     @Query(value = """
         select * from event
-        where notification_time >= :startTime
-        and notification_time <= :endTime
-        and (event.send_email_notification is true || event.send_push_notification is true)
+        where notification_time >= cast(:startTime as timestamp)
+        and notification_time <= cast(:endTime as timestamp)
+        and (event.send_email_notification or event.send_push_notification)
     """, nativeQuery = true)
     List<Event> findEventsNeedToBeNotified(@Param("startTime") Instant startTime, @Param("endTime") Instant endTime);
 }

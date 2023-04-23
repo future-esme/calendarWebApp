@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 /**
@@ -235,8 +236,8 @@ public class Event implements Serializable {
         public EventBuilder(String title, String location, LocalDate eventDay, User userId, Tag tagId) {
             this.title = title;
             this.location = location;
-            this.startTime = eventDay.atStartOfDay().toInstant(ZoneOffset.UTC);
-            this.endTime = eventDay.atTime(23,59).toInstant(ZoneOffset.UTC);
+            this.startTime = eventDay.atStartOfDay().minus(3, ChronoUnit.HOURS).toInstant(ZoneOffset.UTC);
+            this.endTime = eventDay.atTime(23,59).minus(3, ChronoUnit.HOURS).toInstant(ZoneOffset.UTC);
             this.userId = userId;
             this.tagId = tagId;
             this.status = EventStatus.NO_STATUS;

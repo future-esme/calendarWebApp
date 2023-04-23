@@ -1,0 +1,26 @@
+{
+  "calendarApp": {
+    "pushNotification": {
+      "home": {
+        "title": "Push Notifications",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Creeare o nouă entitate Push Notification",
+        "createOrEditLabel": "Creeare sau editare Push Notification",
+        "notFound": "No Push Notifications found"
+      },
+      "created": "A fost creată o nouă entitate Push Notification cu identificatorul {{ param }}",
+      "updated": "Push Notification cu identificatorul {{ param }} a fost actualizată",
+      "deleted": "Push Notification cu identificatorul {{ param }} a fost ștearsă",
+      "delete": {
+        "question": "Sunteți sigur că doriți să ștergeți Push Notification {{ id }}?"
+      },
+      "detail": {
+        "title": "Push Notification"
+      },
+      "id": "Id",
+      "title": "Title",
+      "content": "Content",
+      "userId": "User Id"
+    }
+  }
+}

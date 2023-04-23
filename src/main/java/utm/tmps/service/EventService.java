@@ -1,6 +1,7 @@
 package utm.tmps.service;
 
 import java.time.*;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import utm.tmps.domain.Event;
 import utm.tmps.domain.enumeration.Month;
 import utm.tmps.repository.EventRepository;
+import utm.tmps.repository.PushNotificationRepository;
 import utm.tmps.repository.TagRepository;
 import utm.tmps.service.dto.EventDTO;
 
@@ -31,10 +33,16 @@ public class EventService {
 
     private final UserService userService;
 
-    public EventService(EventRepository eventRepository, TagRepository tagRepository, UserService userService) {
+    private final MailService mailService;
+
+    private final PushNotificationRepository pushNotificationRepository;
+
+    public EventService(EventRepository eventRepository, TagRepository tagRepository, UserService userService, MailService mailService, PushNotificationRepository pushNotificationRepository) {
         this.eventRepository = eventRepository;
         this.tagRepository = tagRepository;
         this.userService = userService;
+        this.mailService = mailService;
+        this.pushNotificationRepository = pushNotificationRepository;
     }
 
     /**
@@ -160,17 +168,20 @@ public class EventService {
 
     @Scheduled(cron = "0 */1 * ? * *")
     public void findEventsAndNotifyUsers() {
-        var now = LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault());
-        var nowBeginningOfMinute =now.withSecond(0).toInstant(ZoneOffset.UTC);
-        var nowEndingOfMinute =now.withSecond(59).toInstant(ZoneOffset.UTC);
-        var eventsToBeNotified = eventRepository.findEventsNeedToBeNotified(nowBeginningOfMinute, nowEndingOfMinute);
+        var now = LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()).minus(3, ChronoUnit.HOURS);
+        var nowBeginningOfMinute = now.withSecond(0).withNano(0).toInstant(ZoneOffset.UTC);
+        var nowEndingOfMinute = now.withSecond(59).toInstant(ZoneOffset.UTC);
+        var eventsToBeNotified =
+            eventRepository.findEventsNeedToBeNotified(
+                nowBeginningOfMinute,
+                nowEndingOfMinute);
         var eventManager = new EventManager();
         for (var event : eventsToBeNotified) {
-            if (event.getSendEmailNotification()) {
-                eventManager.subscribe(event, new MailService());
+            if (Boolean.TRUE.equals(event.getSendEmailNotification())) {
+                eventManager.subscribe(event, new EmailNotificationService(mailService));
             }
-            if (event.getSendPushNotification()) {
-                eventManager.subscribe(event, new PushNotificationService());
+            if (Boolean.TRUE.equals(event.getSendPushNotification())) {
+                eventManager.subscribe(event, new PushNotificationService(pushNotificationRepository, userService));
             }
         }
         eventManager.notifyEvent();
