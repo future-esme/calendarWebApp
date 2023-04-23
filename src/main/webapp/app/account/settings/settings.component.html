@@ -179,19 +179,28 @@
 
         <div class="mb-3">
           <label class="form-label" jhiTranslate="calendarApp.userSettings.weekNumber" for="field_weekNumber">Week Number</label>
-          <input
-            type="checkbox"
-            class="form-check"
-            name="weekNumber"
-            id="field_weekNumber"
-            data-cy="weekNumber"
-            formControlName="weekNumber"
-          />
+          <div class="form-check form-switch">
+            <input
+              type="checkbox"
+              class="form-check-input form-check"
+              name="weekNumber"
+              id="field_weekNumber"
+              data-cy="weekNumber"
+              formControlName="weekNumber"
+            />
+          </div>
         </div>
 
         <div class="mb-3">
           <label class="form-label" jhiTranslate="calendarApp.userSettings.keepTrash" for="field_keepTrash">Keep Trash</label>
-          <input type="checkbox" class="form-check" name="keepTrash" id="field_keepTrash" data-cy="keepTrash" formControlName="keepTrash" />
+          <div class="form-check form-switch">
+            <input
+              type="checkbox"
+              class="form-check form-check-input"
+              name="keepTrash" id="field_keepTrash"
+              data-cy="keepTrash"
+              formControlName="keepTrash" />
+          </div>
         </div>
 
         <div class="mb-3">

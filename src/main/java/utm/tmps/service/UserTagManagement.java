@@ -8,5 +8,5 @@ import java.util.UUID;
 public interface UserTagManagement {
     void delete(UUID id);
 
-    public Optional<Tag> findTag(UUID id);
+    Optional<Tag> findTag(UUID id);
 }

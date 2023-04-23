@@ -88,8 +88,35 @@
     <div class="jh-card card col-md-3 mx-2">
       <div *ngIf="event">
         <h2 data-cy="eventDetailsHeading"><span>{{ event.title }}</span></h2>
-
-        <hr />
+        <h2>
+          <div class="d-flex btn-group float-end" style="margin-right: 1rem">
+            <button
+              class="btn btn-outline-info btn-sm btn-title-rounded"
+              *ngIf="hasPrev()"
+              (click)="prev()"
+              placement="top"
+              container="body">
+              <fa-icon icon="arrow-left" class="fa-2x" style="padding: 0.25rem"></fa-icon>
+            </button>
+            <button
+              class="btn btn-outline-info btn-sm btn-title-rounded"
+              *ngIf="hasNext()"
+              (click)="next()"
+              placement="top"
+              container="body">
+              <fa-icon icon="arrow-right" class="fa-2x" style="padding: 0.25rem"></fa-icon>
+            </button>
+          </div>
+          <button
+            class="btn btn-outline-info btn-sm btn-title-rounded"
+            (click)="deleteEvent(event.id)"
+            placement="top"
+            container="body">
+            <fa-icon icon="trash" class="px-1 fa-2x"></fa-icon>
+            <span jhiTranslate="entity.action.delete"></span>
+          </button>
+        </h2>
+        <hr style="border: 5px solid {{event.tagId!.color!}}"/>
 
         <dl class="row-md jh-entity-details">
           <dt><span jhiTranslate="calendarApp.event.location" *ngIf="event.location != null">Location</span></dt>
@@ -147,16 +174,6 @@
               <a [routerLink]="['/tag', event.tagId.id, 'view']">{{ event.tagId.id }}</a>
             </div>
           </dd>-->
-          <h2>
-            <button
-              class="btn btn-outline-info btn-sm btn-title-rounded"
-              (click)="deleteEvent(event.id)"
-              placement="top"
-              container="body">
-              <fa-icon icon="trash" class="px-1"></fa-icon>
-              <span jhiTranslate="entity.action.delete"></span>
-            </button>
-          </h2>
         </dl>
       </div>
     </div>
@@ -166,13 +183,10 @@
           <thead>
           <tr>
             <th scope="col">
-              <div class="d-flex">
-                <span jhiTranslate="calendarApp.event.title">Title</span>
-              </div>
             </th>
             <th scope="col">
               <div class="d-flex">
-                <span jhiTranslate="calendarApp.event.location">Location</span>
+                <span jhiTranslate="calendarApp.event.title">Title</span>
               </div>
             </th>
             <th scope="col">
@@ -187,25 +201,26 @@
             </th>
             <th scope="col">
               <div class="d-flex">
-                <span jhiTranslate="calendarApp.event.notificationTime">Notification Time</span>
-              </div>
-            </th>
-            <th scope="col">
-              <div class="d-flex">
                 <span jhiTranslate="calendarApp.event.status">Status</span>
               </div>
             </th>
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let event of events" data-cy="entityTable" (click)="displayEvent(event.id)" style="cursor: pointer">
+          <tr *ngFor="let event of events" data-cy="entityTable" >
+            <td>
+              <fa-icon icon="plus" class="fa-1x" *ngIf="event.tagId!.iconName == 'plus'"></fa-icon>
+              <fa-icon icon="home" class="fa-1x" *ngIf="event.tagId!.iconName == 'home'"></fa-icon>
+              <fa-icon icon="calendar" class="fa-1x" *ngIf="event.tagId!.iconName == 'calendar'"></fa-icon>
+              <fa-icon icon="envelope" class="fa-1x" *ngIf="event.tagId!.iconName == 'envelope'"></fa-icon>
+              <fa-icon icon="eye" class="fa-1x" *ngIf="event.tagId!.iconName == 'eye'"></fa-icon>
+            </td>
             <td>{{ event.title }}</td>
-            <td>{{ event.location }}</td>
             <td>{{ event.startTime | formatStandartDateTime }}</td>
             <td>{{ event.endTime | formatStandartDateTime }}</td>
-            <td>{{ event.notificationTime | formatStandartDateTime }}</td>
             <td>{{ event.status }}</td>
           </tr>
+          <!--(click)="displayEvent(event.id)" style="cursor: pointer"-->
           </tbody>
         </table>
       </div>

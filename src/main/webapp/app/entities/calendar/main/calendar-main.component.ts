@@ -4,6 +4,7 @@ import {Calendar, Day} from "../calendar.model";
 import {IEvent} from "../../event/event.model";
 import {NgbCalendar, NgbDateStruct, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CreateEventModal} from "../create-event-modal/create-event-modal";
+import {EventIterator} from "./event-iterator";
 
 @Component({
   selector: 'calendar',
@@ -33,6 +34,7 @@ export class CalendarMainComponent implements OnInit {
 
   events: IEvent[] = []
   event: IEvent | null = null
+  eventIterator: EventIterator | null = null
   constructor(protected calendarService: CalendarService,
               protected ngbCalendar: NgbCalendar,
               protected modalService: NgbModal) {}
@@ -46,10 +48,10 @@ export class CalendarMainComponent implements OnInit {
       this.selectedDay = day.day
       this.calendarService.queryMyEvents(day.day, this.selectedMonth, this.year).subscribe(res => {
         this.events = res.body ?? []
-        if (this.events.length > 0) {
-          this.displayEvent(this.events[0].id)
-        } else {
-          this.event = null
+        this.event = null
+        this.eventIterator = new EventIterator(this.events)
+        if (this.eventIterator.hasNext()) {
+          this.displayEventOverIterator(this.eventIterator.next())
         }
       })
     }
@@ -103,10 +105,30 @@ export class CalendarMainComponent implements OnInit {
     })
   }
 
+  displayEventOverIterator(event: IEvent) {
+    this.event = event
+  }
+
   deleteEvent(eventId: string) {
     this.calendarService.delete(eventId).subscribe(() => {
       this.getCalendar()
     })
+  }
+
+  hasNext(): boolean {
+    return this.eventIterator != undefined && this.eventIterator?.hasNext()
+  }
+
+  next() {
+    if (this.eventIterator != null) this.displayEventOverIterator(this.eventIterator?.next())
+  }
+
+  hasPrev(): boolean {
+    return this.eventIterator != undefined && this.eventIterator?.hasPrev()
+  }
+
+  prev() {
+    if (this.eventIterator != null) this.displayEventOverIterator(this.eventIterator?.prev())
   }
 
   private getCurrentDayEvents() {

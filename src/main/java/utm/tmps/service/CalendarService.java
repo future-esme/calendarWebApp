@@ -24,6 +24,7 @@ public class CalendarService {
     }
 
     public CalendarDTO getCalendarForCurrentUser(Month month, Integer year) {
+        log.debug("Get calendar for current user");
         var currentUser = userService.getCurrentAuthenticatedUser();
         var firstDayOfWeek = currentUser.getUserSettings().getWeekFirstDay();
         var eventDays = eventRepository.getDaysWithEvents(month.ordinal() + 1, year);

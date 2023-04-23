@@ -14,7 +14,7 @@ export interface IEvent {
   notificationTime?: dayjs.Dayjs | null;
   status?: string | null;
   userId?: Pick<IUser, 'id'> | null;
-  tagId?: Pick<ITag, 'id'> | null;
+  tagId?: ITag | null;
 }
 
 export type NewEvent = Omit<IEvent, 'id'> & { id: null };
