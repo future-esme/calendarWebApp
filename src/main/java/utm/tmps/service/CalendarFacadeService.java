@@ -1,5 +1,6 @@
 package utm.tmps.service;
 
+import java.util.Calendar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -10,15 +11,14 @@ import utm.tmps.service.dto.CalendarDTO;
 import utm.tmps.service.dto.CalendarDayDTO;
 import utm.tmps.service.dto.CalendarWeekDTO;
 
-import java.util.Calendar;
-
 @Service
-public class CalendarService {
-    private final Logger log = LoggerFactory.getLogger(CalendarService.class);
+public class CalendarFacadeService {
+
+    private final Logger log = LoggerFactory.getLogger(CalendarFacadeService.class);
     private final UserService userService;
     private final EventRepository eventRepository;
 
-    public CalendarService(UserService userService, EventRepository eventRepository) {
+    public CalendarFacadeService(UserService userService, EventRepository eventRepository) {
         this.userService = userService;
         this.eventRepository = eventRepository;
     }
