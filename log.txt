@@ -1,0 +1,3 @@
+2023.05.20 00:10:59   DEBUG   :Find events for day 14 month MAY year 2023
+2023.05.20 00:11:00   DEBUG   :Find events for day 21 month MAY year 2023
+2023.05.20 00:11:02   DEBUG   :Find events for day 28 month MAY year 2023

@@ -25,7 +25,7 @@ import utm.tmps.service.dto.EventDTO;
 @Service
 public class EventService {
 
-    private final Logger log = LoggerFactory.getLogger(EventService.class);
+    private final LoggingClient log = new LoggingClient();
 
     private final EventRepository eventRepository;
 
@@ -37,12 +37,19 @@ public class EventService {
 
     private final PushNotificationRepository pushNotificationRepository;
 
-    public EventService(EventRepository eventRepository, TagRepository tagRepository, UserService userService, MailService mailService, PushNotificationRepository pushNotificationRepository) {
+    public EventService(
+        EventRepository eventRepository,
+        TagRepository tagRepository,
+        UserService userService,
+        MailService mailService,
+        PushNotificationRepository pushNotificationRepository
+    ) {
         this.eventRepository = eventRepository;
         this.tagRepository = tagRepository;
         this.userService = userService;
         this.mailService = mailService;
         this.pushNotificationRepository = pushNotificationRepository;
+        this.log.setMyLogger(new FileLogger());
     }
 
     /**
@@ -52,26 +59,22 @@ public class EventService {
      * @return the persisted entity.
      */
     public Event save(EventDTO eventDTO) {
-        log.debug("Request to save Event : {}", eventDTO);
+        //log.debug("Request to save Event : {}", eventDTO);
         var currentUser = userService.getCurrentAuthenticatedUser();
         var tag = tagRepository.findById(eventDTO.getTagId());
         Event.EventBuilder newEvent;
         if (Boolean.TRUE.equals(eventDTO.getIsAllDay())) {
-            newEvent = new Event.EventBuilder(
-                eventDTO.getTitle(),
-                eventDTO.getLocation(),
-                eventDTO.getEventDate(),
-                currentUser,
-                tag.get()
-            );
+            newEvent = new Event.EventBuilder(eventDTO.getTitle(), eventDTO.getLocation(), eventDTO.getEventDate(), currentUser, tag.get());
         } else {
-            newEvent = new Event.EventBuilder(
-                eventDTO.getTitle(),
-                eventDTO.getLocation(),
-                eventDTO.getStartTime(),
-                eventDTO.getEndTime(),
-                currentUser,
-                tag.get());
+            newEvent =
+                new Event.EventBuilder(
+                    eventDTO.getTitle(),
+                    eventDTO.getLocation(),
+                    eventDTO.getStartTime(),
+                    eventDTO.getEndTime(),
+                    currentUser,
+                    tag.get()
+                );
         }
         if (eventDTO.getLocation() != null) {
             newEvent.location(eventDTO.getLocation());
@@ -80,14 +83,12 @@ public class EventService {
             newEvent.notes(eventDTO.getNotes());
         }
         if (eventDTO.getSendPushNotification() != null) {
-            newEvent.sendPushNotification(eventDTO.getSendPushNotification())
-                .notificationTime(eventDTO.getNotificationTime());
+            newEvent.sendPushNotification(eventDTO.getSendPushNotification()).notificationTime(eventDTO.getNotificationTime());
         } else {
             newEvent.sendPushNotification(false);
         }
         if (eventDTO.getSendEmailNotification() != null) {
-            newEvent.sendEmailNotification(eventDTO.getSendEmailNotification())
-                .notificationTime(eventDTO.getNotificationTime());
+            newEvent.sendEmailNotification(eventDTO.getSendEmailNotification()).notificationTime(eventDTO.getNotificationTime());
         } else {
             newEvent.sendEmailNotification(false);
         }
@@ -101,14 +102,14 @@ public class EventService {
      * @return the persisted entity.
      */
     public Event update(EventDTO eventDTO, UUID eventId) {
-        log.debug("Request to update Event : {}", eventDTO);
+        //log.debug("Request to update Event : {}", eventDTO);
         var tag = tagRepository.findById(eventDTO.getTagId());
         var event = eventRepository.findById(eventId).get();
         event.setTitle(eventDTO.getTitle());
         event.setLocation(event.getLocation());
         if (Boolean.TRUE.equals(eventDTO.getIsAllDay())) {
             event.setStartTime(eventDTO.getEventDate().atStartOfDay().toInstant(ZoneOffset.UTC));
-            event.setEndTime(eventDTO.getEventDate().atTime(23,59).toInstant(ZoneOffset.UTC));
+            event.setEndTime(eventDTO.getEventDate().atTime(23, 59).toInstant(ZoneOffset.UTC));
         } else {
             event.setStartTime(eventDTO.getStartTime());
             event.setEndTime(eventDTO.getEndTime());
@@ -122,7 +123,6 @@ public class EventService {
         event.setTagId(tag.get());
         return eventRepository.save(event);
     }
-
 
     /**
      * Get all the events.
@@ -144,12 +144,12 @@ public class EventService {
      */
     @Transactional(readOnly = true)
     public Optional<Event> findOne(UUID id) {
-        log.debug("Request to get Event : {}", id);
+        //log.debug("Request to get Event : {}", id);
         return eventRepository.findById(id);
     }
 
-
     public List<Event> findEventsByDay(Integer day, Month month, Integer year) {
+        log.debug("Find events for day " + day + " month " + month + " year " + year);
         var currentUser = userService.getCurrentAuthenticatedUser();
         var targetDayStart = LocalDateTime.of(year, month.ordinal() + 1, day, 0, 0).toInstant(ZoneOffset.UTC);
         var targetDayEnd = LocalDateTime.of(year, month.ordinal() + 1, day, 23, 59).toInstant(ZoneOffset.UTC);
@@ -162,7 +162,7 @@ public class EventService {
      * @param id the id of the entity.
      */
     public void delete(UUID id) {
-        log.debug("Request to delete Event : {}", id);
+        //log.debug("Request to delete Event : {}", id);
         eventRepository.deleteById(id);
     }
 
@@ -171,11 +171,8 @@ public class EventService {
         var now = LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()).minus(3, ChronoUnit.HOURS);
         var nowBeginningOfMinute = now.withSecond(0).withNano(0).toInstant(ZoneOffset.UTC);
         var nowEndingOfMinute = now.withSecond(59).toInstant(ZoneOffset.UTC);
-        var eventsToBeNotified =
-            eventRepository.findEventsNeedToBeNotified(
-                nowBeginningOfMinute,
-                nowEndingOfMinute);
-        var eventManager = new EventManager();
+        var eventsToBeNotified = eventRepository.findEventsNeedToBeNotified(nowBeginningOfMinute, nowEndingOfMinute);
+        var eventManager = EventManager.getInstance();
         for (var event : eventsToBeNotified) {
             if (Boolean.TRUE.equals(event.getSendEmailNotification())) {
                 eventManager.subscribe(event, new EmailNotificationService(mailService));

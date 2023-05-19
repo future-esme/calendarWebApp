@@ -1,8 +1,6 @@
 package utm.tmps.service;
 
 import java.util.Calendar;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import utm.tmps.domain.enumeration.Month;
 import utm.tmps.domain.enumeration.StartWeekDay;
@@ -14,13 +12,14 @@ import utm.tmps.service.dto.CalendarWeekDTO;
 @Service
 public class CalendarFacadeService {
 
-    private final Logger log = LoggerFactory.getLogger(CalendarFacadeService.class);
+    private final LoggingClient log = new LoggingClient();
     private final UserService userService;
     private final EventRepository eventRepository;
 
     public CalendarFacadeService(UserService userService, EventRepository eventRepository) {
         this.userService = userService;
         this.eventRepository = eventRepository;
+        this.log.setMyLogger(new ConsoleLogger());
     }
 
     public CalendarDTO getCalendarForCurrentUser(Month month, Integer year) {
