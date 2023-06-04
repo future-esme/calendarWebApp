@@ -1,3 +1,22 @@
 2023.05.20 00:10:59   DEBUG   :Find events for day 14 month MAY year 2023
 2023.05.20 00:11:00   DEBUG   :Find events for day 21 month MAY year 2023
 2023.05.20 00:11:02   DEBUG   :Find events for day 28 month MAY year 2023
+2023.05.25 12:32:08   DEBUG   :Find events for day 25 month MAY year 2023
+2023.05.25 12:32:13   DEBUG   :Find events for day 25 month APRIL year 2023
+2023.05.25 12:32:26   DEBUG   :Find events for day 25 month MAY year 2023
+2023.05.25 12:33:11   DEBUG   :Find events for day 25 month MAY year 2023
+2023.05.25 12:33:39   DEBUG   :Find events for day 25 month APRIL year 2023
+2023.05.25 12:33:39   DEBUG   :Find events for day 25 month APRIL year 2023
+2023.05.25 12:33:47   DEBUG   :Find events for day 23 month APRIL year 2023
+2023.05.25 12:33:47   DEBUG   :Find events for day 23 month APRIL year 2023
+2023.05.25 12:38:30   DEBUG   :Request to get all Events
+2023.05.25 12:38:30   DEBUG   :Request to get all Events
+2023.05.25 12:38:49   DEBUG   :Find events for day 25 month MAY year 2023
+2023.05.26 09:38:33   DEBUG   :Find events for day 26 month MAY year 2023
+2023.05.26 09:38:42   DEBUG   :Find events for day 26 month APRIL year 2023
+2023.05.26 09:38:48   DEBUG   :Find events for day 23 month APRIL year 2023
+2023.05.26 09:40:14   DEBUG   :Find events for day 26 month MAY year 2023
+2023.05.26 09:40:52   DEBUG   :Find events for day 26 month MAY year 2023
+2023.05.26 09:42:28   DEBUG   :Find events for day 26 month MAY year 2023
+2023.05.26 09:42:52   DEBUG   :Find events for day 26 month JUNE year 2023
+2023.05.26 09:42:55   DEBUG   :Find events for day 26 month MAY year 2023
