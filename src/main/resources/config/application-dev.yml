@@ -47,7 +47,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: depozitar.situatii.financiare@gmail.com
-    password: pqwjabwherzomudh
+    password: 
     properties.mail.smtp:
       auth: true
       connectiontimeout: 5000
